@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -8,13 +8,14 @@ namespace LexicalAnalyzer
 {
     class Program
     {
-        static string[] keyWords = {"absolute", "assembler", "and", "array", "asm", "begin", "boolean", "break", "case", "char", "const", "constructor", "destructor", "continue",
-                                    "div", "do", "downto", "else", "end", "export", "exports", "external", "far", "file", "for", "forward", "function", "goto", "if", "implementation",
-                                    "in", "index", "inherited", "inline", "interface", "interrupt", "is", "label", "library", "mod", "name", "nil", "near", "not", "object", "of", "or", "org",
-                                    "otherwise", "packed", "private", "print", "procedure", "program", "public", "read", "real", "record", "resident", "repeat", "set", "shl", "shr",
-                                    "step", "string", "then", "to", "type", "unit", "until", "uses", "var", "virtual", "while", "with", "xor" };
+        static string[] keyWords = {"absolute", "and", "array", "as", "asm", "begin", "break", "case",  "class", "const", "constructor", "destructor",
+                                    "dispinterface", "div", "do", "downto", "else", "end", "except", "exports", "file", "for", "function", "finalization",
+                                    "finally", "goto", "if", "implementation", "initialization", "inline", "is", "library", "on", "out",
+                                    "in", "inherited", "inline", "interface", "label", "library", "nil", "not", "object", "of", "or",
+                                    "packed", "property", "procedure", "program", "record", "raise", "resourcestring", "threadvar", "try",
+                                    "repeat", "set", "shl", "shr", "string", "then", "to", "type", "unit", "until", "uses", "var", "while", "with", "xor" };
         static char[] separators = { ',', '.', '(', ')', '[', ']', ':', ';', '@', '{', '}', '_', '^', '#' };
-        static char[] math = { '+', '-', '*', '/', '<', '>', ':', '=' };
+        static char[] operators = { '+', '-', '*', '/', '<', '>', ':', '=' };
         static string temp = null;
         static string category = null;
         static string meaning = null;
@@ -23,6 +24,7 @@ namespace LexicalAnalyzer
         static int id = 0;
         static int value = 0;
         static bool comEnd = true;
+        static bool strEnd = true;
         static void DFA(string input_data)
         {
         Again:
@@ -40,6 +42,7 @@ namespace LexicalAnalyzer
             {
                 id++;
                 if (id == input_data.Length) return;
+                goto Again;
             }
 
             if (input_data[id] == '-' || input_data[id] == '+')
@@ -49,7 +52,7 @@ namespace LexicalAnalyzer
                     Integer(input_data);
                     goto Again;
                 }
-                if (input_data[id + 1] == '%' || input_data[id + 1] == '&' || input_data[id + 1] == '$')
+                if (id + 1 < input_data.Length && (input_data[id + 1] == '%' || input_data[id + 1] == '&' || input_data[id + 1] == '$'))
                 {
                     Sistem(input_data);
                     goto Again;
@@ -105,13 +108,14 @@ namespace LexicalAnalyzer
             {
                 Comment(input_data);
                 if (!comEnd)
-                {
                     return;
-                }
                 else
-                {
                     goto Again;
-                }
+            }
+            else if (input_data[id] == '#')
+            {
+                Char(input_data);
+                goto Again;
             }
             else
             {
@@ -187,7 +191,7 @@ namespace LexicalAnalyzer
                         Error(2);
                     }
                 }
-                else if (input_data[i] == '+' || input_data[i] == '+' )
+                else if (input_data[i] == '+' || input_data[i] == '+')
                 {
                     meaning = temp;
                     Result();
@@ -218,7 +222,7 @@ namespace LexicalAnalyzer
                         Result();
                         return;
                     }
-                } 
+                }
                 else
                 {
                     meaning = temp;
@@ -234,17 +238,29 @@ namespace LexicalAnalyzer
             category = "string";
             for (int i = id; i < input_data.Length; i++)
             {
+                // if (temp != null) i = temp.Length;
                 if (temp == null)
                     first_symbol = i + 1;
-                if (i == id && i + 1 < input_data.Length && input_data[i] == '\'' && input_data[i+1] == '\'')
+                if (i == id && i + 1 < input_data.Length && input_data[i] == '\'' && input_data[i + 1] == '\'')
                 {
-                    temp += input_data[i];
-                    temp += input_data[i + 1];
-                    meaning = " ";
-                    Result();
-                    return;
+                    if (i + 2 < input_data.Length && input_data[i + 2] == '\'')
+                    {
+                        temp += input_data[i];
+                        temp += input_data[i + 1];
+                        temp += input_data[i + 2];
+                        meaning += "\'";
+                        i += 2;
+                    }
+                    else
+                    {
+                        temp += input_data[i];
+                        temp += input_data[i + 1];
+                        meaning = " ";
+                        Result();
+                        return;
+                    }
                 }
-                else if (i + 1 < input_data.Length && input_data[i] == '\'' && input_data[i+1] == '\'' )
+                else if (i + 1 < input_data.Length && input_data[i] == '\'' && input_data[i + 1] == '\'')
                 {
                     temp += input_data[i];
                     temp += input_data[i + 1];
@@ -258,14 +274,31 @@ namespace LexicalAnalyzer
                         temp += input_data[i];
                         if (meaning != null)
                         {
-                            Result();
-                            return;
+                            if (i + 1 < input_data.Length - 1 && input_data[i + 1] == '#')
+                            {
+                                Char(input_data);
+                                return;
+                            }
+                            else if (!strEnd)
+                            {
+                                strEnd = true;
+                            }
+                            else
+                            {
+                                Result();
+                                return;
+                            }
                         }
                     }
                     else
                     {
                         meaning += input_data[i];
                         temp += input_data[i];
+
+                        if (i == input_data.Length)
+                        {
+                            Error(3);
+                        }
                     }
                 }
             }
@@ -273,7 +306,7 @@ namespace LexicalAnalyzer
 
         static void KeyWord()
         {
-            for (int j = 0; j < keyWords.Length; j++) //кейворды
+            for (int j = 0; j < keyWords.Length; j++)
             {
                 if (temp.ToLower() == keyWords[j])
                 {
@@ -295,7 +328,7 @@ namespace LexicalAnalyzer
 
             for (int i = id; i < input_data.Length; i++)
             {
-                if (temp == null) 
+                if (temp == null)
                     first_symbol = i + 1;
 
                 if (input_data[i] == '+' || input_data[i] == '-')
@@ -348,7 +381,7 @@ namespace LexicalAnalyzer
                         comp = input_data[i] - 'A' + 10;
                     }
                     temp += input_data[i];
-                   
+
                     answer = (answer * up) + comp;
 
                     if (answer > 2147483647 || answer < -2147483648)
@@ -397,7 +430,7 @@ namespace LexicalAnalyzer
         {
             for (int i = id; i < input_data.Length; i++)
             {
-               if (id == input_data.Length)
+                if (id == input_data.Length)
                 {
                     return;
                 }
@@ -410,7 +443,7 @@ namespace LexicalAnalyzer
             {
                 if (temp == null)
                     first_symbol = i + 1;
-                foreach (char c in math)
+                foreach (char c in operators)
                 {
                     if (input_data[i] == c)
                     {
@@ -420,7 +453,7 @@ namespace LexicalAnalyzer
                             {
                                 temp = input_data[i].ToString() + input_data[i + 1];
                                 meaning = temp;
-                                category = "math";
+                                category = "operators";
                                 Result();
                                 return;
                             }
@@ -428,7 +461,7 @@ namespace LexicalAnalyzer
                             {
                                 temp = input_data[i].ToString() + input_data[i + 1];
                                 meaning = temp;
-                                category = "math";
+                                category = "operators";
                                 Result();
                                 return;
                             }
@@ -437,14 +470,14 @@ namespace LexicalAnalyzer
                             {
                                 temp = input_data[i].ToString() + input_data[i + 1];
                                 meaning = temp;
-                                category = "math";
+                                category = "operators";
                                 Result();
                                 return;
                             }
                         }
                         temp = input_data[i].ToString();
                         meaning = temp;
-                        category = "math";
+                        category = "operators";
                         Result();
                         return;
                     }
@@ -460,7 +493,62 @@ namespace LexicalAnalyzer
                         return;
                     }
                 }
-                
+
+            }
+        }
+
+        static void Char(string input_data)
+        {
+            if (category == null)
+                category = "char";
+            string ascii = null;
+            for (int i = id; i < input_data.Length; i++)
+            {
+                if (temp != null) i = temp.Length;
+                if (temp == null)
+                    first_symbol = i + 1;
+                if (input_data[i] == '#' && (i + 1 < input_data.Length && input_data[i + 1] != '#'))
+                {
+                    temp += input_data[i];
+                }
+                else if (input_data[i] >= '0' && input_data[i] <= '9')
+                {
+                    temp += input_data[i];
+                    ascii += input_data[i];
+                }
+                else if (((input_data[i] >= 'A') && (input_data[i] <= 'Z')) || ((input_data[i] >= 'a') && (input_data[i] <= 'z')))
+                {
+                    Error(4);
+                }
+                else if (input_data[i] == '/' && input_data[i + 1] == '/' || input_data[i] == '\'' || input_data[i] == ' ')
+                {
+                    if (input_data[i] == '\'') strEnd = false;
+                    goto TryAscii;
+                }
+                else
+                {
+                    Error(5);
+                }
+            }
+        TryAscii:
+            try
+            {
+                int unicode = int.Parse(ascii);
+                meaning += Convert.ToChar(unicode);
+                if (strEnd)
+                {
+                    Result();
+                    return;
+                }
+                else
+                {
+                    String(input_data);
+                    return;
+                }
+            }
+            catch
+            {
+                Error(4);
             }
         }
 
@@ -483,6 +571,15 @@ namespace LexicalAnalyzer
                     break;
                 case 2:
                     Console.WriteLine($"Range check error while evaluating constants on line {line_number}");
+                    break;
+                case 3:
+                    Console.WriteLine($"String exceeds line on {line_number} line");
+                    break;
+                case 4:
+                    Console.WriteLine($"Illegal char constant on line {line_number}");
+                    break;
+                case 5:
+                    Console.WriteLine($"Syntax error on line {line_number}");
                     break;
             }
             temp = null;
