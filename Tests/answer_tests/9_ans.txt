@@ -1,0 +1,2 @@
+1 1 string s 's'
+1 5 char d #100

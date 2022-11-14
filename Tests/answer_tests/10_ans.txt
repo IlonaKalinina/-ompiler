@@ -1,0 +1,2 @@
+1 1 char d #100
+1 6 string s 's'
