@@ -202,7 +202,15 @@ namespace CompilerPascal
                     Console.WriteLine($"{i} | OK");
                     Console.WriteLine();
                 }
-                Console.ReadLine();
+                var exit = Console.ReadKey();
+                if (exit.Key == ConsoleKey.Escape)
+                {
+                    return;
+                }
+                else
+                {
+                    continue;
+                }
             }
         }
         static void Parser()
