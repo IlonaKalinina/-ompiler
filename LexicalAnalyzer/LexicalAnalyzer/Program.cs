@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LexicalAnalyzer
+namespace Copiler
 {
     class Program
     {
@@ -26,6 +26,7 @@ namespace LexicalAnalyzer
         static bool comEnd = true;
         static bool strEnd = true;
         static bool error = false;
+        static bool eof = false;
         static void DFA(string input_data)
         {
         Again:
@@ -267,6 +268,13 @@ namespace LexicalAnalyzer
                             return;
                         }
                         KeyWord();
+               /*         if (eof)
+                        {
+                            if (i + 1 <= input_data.Length && input_data[i + 1] == '.')
+                            {
+
+                            }
+                        }*/
                         Result();
                         return;
                     }
@@ -378,6 +386,10 @@ namespace LexicalAnalyzer
                 if (temp.ToLower() == keyWords[j])
                 {
                     category = "keyword";
+                    if (temp.ToLower() == "end")
+                    {
+                        eof = true;
+                    }
                 }
             }
             if (temp.ToLower() == "false" || temp.ToLower() == "true")
@@ -692,16 +704,15 @@ namespace LexicalAnalyzer
             meaning = null;
             category = null;
             error = false;
-            //Environment.Exit(0);
         }
 
         static void Main(string[] args)
         {
             string input_data;
 
-            for (int i = 1; i <= 56; i++)
+            for (int i = 1; i <= 1; i++)
             {
-                Console.WriteLine($"--------File number: {i}----------");
+              // Console.WriteLine($"--------File number: {i}----------");
                 string fileName = $@"..\..\Tests\input_tests\{i}_in.txt";
                 using (StreamReader sr = new StreamReader(fileName, Encoding.Default))
                 {
