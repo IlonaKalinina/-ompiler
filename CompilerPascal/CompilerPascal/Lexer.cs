@@ -40,125 +40,142 @@ namespace CompilerPascal
         public void ReadFileLexer(string path)
         {
             lexems.Clear();
-            string input_data;
-
             string fileName = path;
-            using (StreamReader sr = new StreamReader(fileName, Encoding.Default))
+            using (FileStream sr = File.OpenRead(fileName))
             {
-                while ((input_data = sr.ReadLine()) != null)
+                byte[] inputDataBytes = new byte[sr.Length];
+                sr.Read(inputDataBytes);
+
+                List<byte> input_data = new List<byte>();
+                for (int i = 0; i < inputDataBytes.Length; i++)
                 {
-                    id = 0;
-                    CheckSymbol(input_data);
-                    line_number++;
+                    input_data.Add(inputDataBytes[i]);
+                }
+
+                while (input_data.Count > 0)
+                {
+                    while (input_data[0] == (byte)' ' || input_data[0] == 13) // 10-/n 13-/r
+                    {
+                        first_symbol+=1;
+                        input_data.RemoveAt(0);
+                    }
+                    if (input_data[0] == 10)
+                    {
+                        line_number += 1;
+                        first_symbol = 1;
+                        input_data.RemoveAt(0);
+                    }
+                    Lexema newlexema = GetLexem(ref input_data);
                 }
             }
             line_number = 1;
             first_symbol = 1;
+            return;
         }
-        void CheckSymbol(string input_data)
+
+        public Lexema GetLexem(ref List<byte> input_data)
         {
-        Again:
+            string str = null;
+            for (int i = 0; i < input_data.Count; i++)
+            {
+                if (input_data[i] != 10)
+                {
+                    str = str + (char)input_data[i];
+                }
+                else
+                {
+                    break;
+                }
+            }
+            CheckSymbol(str);
+            id = 0;
+//Resault
+            for (int i = 0; i < lexems[^1].initialLexema.Length; i++)
+            {
+                input_data.RemoveAt(0);
+                first_symbol += 1;
+            }
+
+            return lexems[^1];
+        }
+        public void CheckSymbol(string str)
+        {
             if (!comEnd)
             {
                 temp = null;
-                Comment(input_data);
+                Comment(str);
                 if (!comEnd)
                     return;
-                else
-                    goto Again;
             }
-            if (id == input_data.Length) return;
-            if (input_data[id] == ' ')
+            if (str[id] == '-' || str[id] == '+')
             {
-                id++;
-                if (id == input_data.Length) return;
-                goto Again;
-            }
-
-            if (input_data[id] == '-' || input_data[id] == '+')
-            {
-                if (id + 1 < input_data.Length && input_data[id + 1] >= '0' && input_data[id + 1] <= '9')
+                if (id + 1 < str.Length && str[id + 1] >= '0' && str[id + 1] <= '9')
                 {
-                    Integer(input_data);
-                    goto Again;
+                    Integer(str);
                 }
-                if (id + 1 < input_data.Length && (input_data[id + 1] == '%' || input_data[id + 1] == '&' || input_data[id + 1] == '$'))
+                if (id + 1 < str.Length && (str[id + 1] == '%' || str[id + 1] == '&' || str[id + 1] == '$'))
                 {
-                    Sistem(input_data);
-                    goto Again;
+                    Sistem(str);
                 }
                 else
                 {
-                    Symbols(input_data);
-                    goto Again;
+                    Symbols(str);
                 }
             }
-            else if (input_data[id] >= '0' && input_data[id] <= '9')
+            else if (str[id] >= '0' && str[id] <= '9')
             {
-                Integer(input_data);
-                goto Again;
+                Integer(str);
             }
-            else if (((input_data[id] >= 'A') && (input_data[id] <= 'Z')) || ((input_data[id] >= 'a') && (input_data[id] <= 'z')) || input_data[id] == '_')
+            else if (((str[id] >= 'A') && (str[id] <= 'Z')) || ((str[id] >= 'a') && (str[id] <= 'z')) || str[id] == '_')
             {
-                Identifier(input_data);
-                goto Again;
+                Identifier(str);
             }
-            else if (input_data[id] == '%' || input_data[id] == '&' || input_data[id] == '$')
+            else if (str[id] == '%' || str[id] == '&' || str[id] == '$')
             {
-                Sistem(input_data);
-                goto Again;
+                Sistem(str);
             }
-            else if (input_data[id] == '\'')
+            else if (str[id] == '\'')
             {
-                String(input_data);
-                goto Again;
+                String(str);
             }
-            else if (input_data[id] == '/')
+            else if (str[id] == '/')
             {
-                if (id + 1 < input_data.Length)
+                if (id + 1 < str.Length)
                 {
-                    if (input_data[id] == '/' && input_data[id + 1] == '/')
+                    if (str[id] == '/' && str[id + 1] == '/')
                     {
-                        oneLineComment(input_data);
+                        oneLineComment(str);
                         return;
                     }
                     else
                     {
-                        Symbols(input_data);
-                        goto Again;
+                        Symbols(str);
                     }
                 }
                 else
                 {
-                    Symbols(input_data);
-                    goto Again;
+                    Symbols(str);
                 }
             }
-            else if (input_data[id] == '{')
+            else if (str[id] == '{')
             {
-                Comment(input_data);
+                Comment(str);
                 if (!comEnd)
                     return;
-                else
-                    goto Again;
             }
-            else if (input_data[id] == '#' && id + 1 < input_data.Length && input_data[id + 1] >= '0' && input_data[id + 1] <= '9')
+            else if (str[id] == '#' && id + 1 < str.Length && str[id + 1] >= '0' && str[id + 1] <= '9')
             {
-                Char(input_data);
-                goto Again;
+                Char(str);
             }
             else
             {
-                Symbols(input_data);
-                goto Again;
+                Symbols(str);
             }
         }
         void Integer(string input_data)
         {
             for (int i = id; i < input_data.Length; i++)
             {
-                if (temp == null)
-                    first_symbol = i + 1;
                 if ((input_data[i] >= '0' && input_data[i] <= '9') || (input_data[i] == '.') || ((input_data[i] == '-') || (input_data[i] == '+')) && (temp == null))//интеджер
                 {
                     if (input_data[i] == '.')
@@ -279,8 +296,6 @@ namespace CompilerPascal
             }
             for (int i = id; i < input_data.Length; i++)
             {
-                if (temp == null)
-                    first_symbol = i + 1;
                 if (((input_data[i] >= 'A') && (input_data[i] <= 'Z')) || ((input_data[i] >= 'a') && (input_data[i] <= 'z')) || (input_data[i] == '_') || (input_data[i] >= '0' && input_data[i] <= '9'))
                 {
                     temp += input_data[i];
@@ -330,8 +345,6 @@ namespace CompilerPascal
             }
             for (int i = id; i < input_data.Length; i++)
             {
-                if (temp == null)
-                    first_symbol = i + 1;
                 if (i == id && i + 1 < input_data.Length && input_data[i] == '\'' && input_data[i + 1] == '\'')
                 {
                     if (i + 2 < input_data.Length && input_data[i + 2] == '\'')
@@ -423,9 +436,6 @@ namespace CompilerPascal
 
             for (int i = id; i < input_data.Length; i++)
             {
-                if (temp == null)
-                    first_symbol = i + 1;
-
                 if (input_data[i] == '+' || input_data[i] == '-')
                 {
                     if (input_data[i] == '-') negative = true;
@@ -561,8 +571,6 @@ namespace CompilerPascal
         {
             for (int i = id; i < input_data.Length; i++)
             {
-                if (temp == null)
-                    first_symbol = i + 1;
                 foreach (char c in operators)
                 {
                     if (input_data[i] == c)
@@ -629,8 +637,6 @@ namespace CompilerPascal
             }
             for (int i = id; i < input_data.Length; i++)
             {
-                if (temp == null)
-                    first_symbol = i + 1;
                 if (input_data[i] == '#' && i + 1 < input_data.Length && input_data[i + 1] != '#' && ascii == null)
                 {
                     temp += input_data[i];
@@ -718,7 +724,7 @@ namespace CompilerPascal
             }
             result = new Lexema() { numberLine = line_number, numberSymbol = first_symbol, categoryLexeme = category, valueLexema = textError, initialLexema = temp };
             lexems.Add(result);
-            id += temp.Length;
+            id += temp.Length - 1;
             temp = null;
             meaning = null;
             category = null;

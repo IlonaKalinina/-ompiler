@@ -8,27 +8,47 @@ namespace CompilerPascal
 {
     public class Node
     {
-        public string type;
+    }
+    public class BinOp
+    {
+        public Node left;
+        public Node right;
+        public string op;
+    }
+    public class Number
+    {
         public string value;
-        public List<Node> children;
+    }
+    public class Variable
+    {
+        public string name;
+    }
 
-        static void Parser()
+    internal class Parser
+    {
+        public void ReadFileLexer(string path)
+        {
+            string input_data;
+
+            string fileName = path;
+            using (StreamReader sr = new StreamReader(fileName, Encoding.Default))
+            {
+                while ((input_data = sr.ReadLine()) != null)
+                {
+                }
+            }
+        }
+        public static void ParseExpression()
+        {
+           
+        }
+        public static void ParseTerm()
         {
 
         }
-
-        static void ParseExpression()
-        {
-
-        }
-        static void ParseTerm()
-        {
-
-        }
-        static void ParseFactor()
+        public static void ParseFactor()
         {
 
         }
     }
-
 }
