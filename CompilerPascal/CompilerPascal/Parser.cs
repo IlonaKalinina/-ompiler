@@ -37,6 +37,8 @@ namespace CompilerPascal
                 nowLexem = lexer.GetLexem(ref input_data);
                 doParse = Expression(ref input_data);
             }
+            //Console.WriteLine();
+            
             return;
         }
         public Node Expression(ref List<byte> text)
@@ -90,7 +92,7 @@ namespace CompilerPascal
                     {
                         type = "BinOp",
                         value = BinOp,
-                        children = new List<Node?> { leftСhild, rightСhild }
+                        children = new List<Node> { leftСhild, rightСhild }
                     };
                     if (rightСhild.type == "Error")
                     {
@@ -109,20 +111,18 @@ namespace CompilerPascal
         {
             if (nowLexem.categoryLexeme == "integer" || nowLexem.categoryLexeme == "real")
             {
-                Lexema factor = nowLexem;
                 return new Node()
                 {
                     type = "Number",
-                    value = factor.valueLexema
+                    value = nowLexem.valueLexema
                 };
             }
             if (nowLexem.categoryLexeme == "identifier")
             {
-                Lexema factor = nowLexem;
                 return new Node()
                 {
                     type = "Identifier",
-                    value = factor.valueLexema
+                    value = nowLexem.valueLexema
                 };
             }
             if (nowLexem.valueLexema == "(")

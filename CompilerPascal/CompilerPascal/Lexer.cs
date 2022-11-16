@@ -36,7 +36,7 @@ namespace CompilerPascal
         public static bool strEnd = true;
         public static bool error = false;
         public static bool eof = false;
-
+        public List<byte> input_data = new List<byte>();
         public void ReadFileLexer(string path)
         {
             lexems.Clear();
@@ -46,7 +46,6 @@ namespace CompilerPascal
                 byte[] inputDataBytes = new byte[sr.Length];
                 sr.Read(inputDataBytes);
 
-                List<byte> input_data = new List<byte>();
                 for (int i = 0; i < inputDataBytes.Length; i++)
                 {
                     input_data.Add(inputDataBytes[i]);
@@ -54,17 +53,6 @@ namespace CompilerPascal
 
                 while (input_data.Count > 0)
                 {
-                    while (input_data[0] == (byte)' ' || input_data[0] == 13) // 10-/n 13-/r
-                    {
-                        first_symbol+=1;
-                        input_data.RemoveAt(0);
-                    }
-                    if (input_data[0] == 10)
-                    {
-                        line_number += 1;
-                        first_symbol = 1;
-                        input_data.RemoveAt(0);
-                    }
                     Lexema newlexema = GetLexem(ref input_data);
                 }
             }
@@ -72,14 +60,27 @@ namespace CompilerPascal
             first_symbol = 1;
             return;
         }
-        public Lexema GetLexem(ref List<byte> inputDataGetLexem)
+        public Lexema GetLexem(ref List<byte> input_data)
         {
             string str = null;
-            for (int i = 0; i < inputDataGetLexem.Count; i++)
+
+            while (input_data[0] == (byte)' ' || input_data[0] == 13) // 10-/n 13-/r
             {
-                if (inputDataGetLexem[i] != 10)
+                first_symbol++;
+                input_data.RemoveAt(0);
+            }
+            if (input_data[0] == 10)
+            {
+                line_number++;
+                first_symbol = 1;
+                input_data.RemoveAt(0);
+            }
+
+            for (int i = 0; i < input_data.Count; i++)
+            {
+                if (input_data[i] != 10)
                 {
-                    str = str + (char)inputDataGetLexem[i];
+                    str = str + (char)input_data[i];
                 }
                 else
                 {
@@ -89,12 +90,28 @@ namespace CompilerPascal
             CheckSymbol(str);
             id = 0;
             //Result
-            for (int i = 0; i < lexems[^1].initialLexema.Length; i++)
+            if (lexems[^1].categoryLexeme == "comments")
             {
-                inputDataGetLexem.RemoveAt(0);
-                first_symbol += 1;
+                for (int i = 0; i < str.Length; i++)
+                {
+                    input_data.RemoveAt(0);
+                }
+                if(input_data.Count != 0)
+                {
+                    Lexema l = new Lexema();
+                    return l;
+                }
+                
+                
             }
-
+            else
+            {
+                for (int i = 0; i < lexems[^1].initialLexema.Length; i++)
+                {
+                    input_data.RemoveAt(0);
+                    first_symbol++;
+                }
+            }
             return lexems[^1];
         }
         public void CheckSymbol(string input_data)
@@ -106,6 +123,7 @@ namespace CompilerPascal
                 if (!comEnd)
                     return;
             }
+            //if (input_data[id] == ' ') id++;
             if (input_data[id] == '-' || input_data[id] == '+')
             {
                 if (id + 1 < input_data.Length && input_data[id + 1] >= '0' && input_data[id + 1] <= '9')
@@ -548,6 +566,7 @@ namespace CompilerPascal
                 if (input_data[i] == '}')
                 {
                     comEnd = true;
+                    meaning = temp;
                     category = "comments";
                     Result();
                     return;
@@ -555,6 +574,7 @@ namespace CompilerPascal
                 else if (i == input_data.Length - 1)
                 {
                     comEnd = false;
+                    meaning = temp;
                     category = "comments";
                     Result();
                     return;
@@ -563,13 +583,8 @@ namespace CompilerPascal
         }
         void oneLineComment(string input_data)
         {
-            for (int i = id; i < input_data.Length; i++)
-            {
-                if (id == input_data.Length)
-                {
-                    return;
-                }
-            }
+            category = "comments";
+            Result();
         }
         void Symbols(string input_data)
         {
@@ -695,7 +710,7 @@ namespace CompilerPascal
             Lexema result = new Lexema();
             result = new Lexema() { numberLine = line_number, numberSymbol = first_symbol, categoryLexeme = category, valueLexema = meaning, initialLexema = temp };
             lexems.Add(result);
-            id += temp.Length;
+            //id += temp.Length;
             temp = null;
             meaning = null;
             category = null;
