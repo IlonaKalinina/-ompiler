@@ -8,15 +8,15 @@ namespace CompilerPascal
 {
     public class Tester
     {
-        public static void StartTest()
+        public static void Test()
         {
             Console.WriteLine("Нажмите 1, чтобы запустить лексический анализатор\n" +
-                              "Нажмите 2, чтобы запустить синтаксический анализ простейших выражений\n");
+                              "Нажмите 2, чтобы запустить синтаксический анализ простейших выражений");
             string? key = Console.ReadLine();
             if (key == "1")
             {
                 Console.WriteLine("Нажмите 3, чтобы провести общее тестирование\n" +
-                                  "Нажмите 4, чтобы провести подробное тестирование\n");
+                                  "Нажмите 4, чтобы провести подробное тестирование");
                 string? keyTesting = Console.ReadLine();
                 if (keyTesting == "3")
                 {
@@ -29,9 +29,12 @@ namespace CompilerPascal
             }
             if (key == "2")
             {
-                Parser();
+                Parser P = new Parser();
+                string path = $@"..\..\..\..\..\Tests\input_tests\500_in.txt";
+                P.ReadFileParser(path);
             }
         }
+
         static void GeneralTesting()
         {
             Lexer l = new Lexer();
@@ -60,6 +63,8 @@ namespace CompilerPascal
                         }
                         else if (element.categoryLexeme == "comments")
                         {
+                            line_res = null;
+                            answer.Add(line_res);
                         }
                         else
                         {
@@ -142,6 +147,8 @@ namespace CompilerPascal
                         }
                         else if (element.categoryLexeme == "comments")
                         {
+                            line_res = null;
+                            answer.Add(line_res);
                         }
                         else
                         {
@@ -231,10 +238,6 @@ namespace CompilerPascal
                     continue;
                 }
             }
-        }
-        static void Parser()
-        {
-
         }
     }
 }

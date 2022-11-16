@@ -298,6 +298,15 @@ namespace CompilerPascal
                 if (((input_data[i] >= 'A') && (input_data[i] <= 'Z')) || ((input_data[i] >= 'a') && (input_data[i] <= 'z')) || (input_data[i] == '_') || (input_data[i] >= '0' && input_data[i] <= '9'))
                 {
                     temp += input_data[i];
+                    if (temp == "end" && i + 1 <= input_data.Length - 1 && input_data[i + 1] == '.')
+                    {
+                        category = "end_file";
+                        temp += input_data[i + 1];
+                        meaning = temp;
+                        eof = true;
+                        Result();
+                        return;
+                    }
                     if (i == input_data.Length - 1)
                     {
                         meaning = temp;
@@ -415,10 +424,6 @@ namespace CompilerPascal
                 if (temp.ToLower() == keyWords[j])
                 {
                     category = "keyword";
-                    if (temp.ToLower() == "end")
-                    {
-                        eof = true;
-                    }
                 }
             }
             if (temp.ToLower() == "false" || temp.ToLower() == "true")

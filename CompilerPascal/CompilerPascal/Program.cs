@@ -10,7 +10,7 @@ namespace CompilerPascal
     {
         static void Main(string[] args)
         {
-            Tester.StartTest();
+            Tester.Test();
         }
     }
 }
