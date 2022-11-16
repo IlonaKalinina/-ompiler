@@ -10,19 +10,24 @@ namespace CompilerPascal
     {
         public static void StartTest()
         {
-            Console.WriteLine("Нажмите 1, чтобы провести общее тестирование\n" +
-                              "Нажмите 2, чтобы провести подробное тестироние\n" +
-                              "Нажмите 3, чтобы провести синтаксический анализ простейших выражений");
+            Console.WriteLine("Нажмите 1, чтобы запустить лексический анализатор\n" +
+                              "Нажмите 2, чтобы запустить синтаксический анализ простейших выражений\n");
             string? key = Console.ReadLine();
             if (key == "1")
             {
-                GeneralTesting();
+                Console.WriteLine("Нажмите 3, чтобы провести общее тестирование\n" +
+                                  "Нажмите 4, чтобы провести подробное тестирование\n");
+                string? keyTesting = Console.ReadLine();
+                if (keyTesting == "3")
+                {
+                    GeneralTesting();
+                }
+                if (keyTesting == "4")
+                {
+                    DetailTesting();
+                }
             }
             if (key == "2")
-            {
-                DetailTesting();
-            }
-            if (key == "3")
             {
                 Parser();
             }
@@ -52,6 +57,9 @@ namespace CompilerPascal
                         {
                             line_res = element.numberLine + " " + element.numberSymbol + " " + element.categoryLexeme + " " + element.valueLexema + " " + element.initialLexema;
                             answer.Add(line_res);
+                        }
+                        else if (element.categoryLexeme == "comments")
+                        {
                         }
                         else
                         {
@@ -85,6 +93,10 @@ namespace CompilerPascal
                             wrong = true;
                         }
                         j++;
+                    }
+                    if (j != answer.Count)
+                    {
+                        wrong = true;
                     }
                     if (line == null && line_res == "")
                     {
@@ -127,6 +139,9 @@ namespace CompilerPascal
                         {
                             line_res = element.numberLine + " " + element.numberSymbol + " " + element.categoryLexeme + " " + element.valueLexema + " " + element.initialLexema;
                             answer.Add(line_res);
+                        }
+                        else if (element.categoryLexeme == "comments")
+                        {
                         }
                         else
                         {

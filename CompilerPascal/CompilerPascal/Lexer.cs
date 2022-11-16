@@ -72,15 +72,14 @@ namespace CompilerPascal
             first_symbol = 1;
             return;
         }
-
-        public Lexema GetLexem(ref List<byte> input_data)
+        public Lexema GetLexem(ref List<byte> inputDataGetLexem)
         {
             string str = null;
-            for (int i = 0; i < input_data.Count; i++)
+            for (int i = 0; i < inputDataGetLexem.Count; i++)
             {
-                if (input_data[i] != 10)
+                if (inputDataGetLexem[i] != 10)
                 {
-                    str = str + (char)input_data[i];
+                    str = str + (char)inputDataGetLexem[i];
                 }
                 else
                 {
@@ -89,87 +88,87 @@ namespace CompilerPascal
             }
             CheckSymbol(str);
             id = 0;
-//Resault
+            //Result
             for (int i = 0; i < lexems[^1].initialLexema.Length; i++)
             {
-                input_data.RemoveAt(0);
+                inputDataGetLexem.RemoveAt(0);
                 first_symbol += 1;
             }
 
             return lexems[^1];
         }
-        public void CheckSymbol(string str)
+        public void CheckSymbol(string input_data)
         {
             if (!comEnd)
             {
                 temp = null;
-                Comment(str);
+                Comment(input_data);
                 if (!comEnd)
                     return;
             }
-            if (str[id] == '-' || str[id] == '+')
+            if (input_data[id] == '-' || input_data[id] == '+')
             {
-                if (id + 1 < str.Length && str[id + 1] >= '0' && str[id + 1] <= '9')
+                if (id + 1 < input_data.Length && input_data[id + 1] >= '0' && input_data[id + 1] <= '9')
                 {
-                    Integer(str);
+                    Integer(input_data);
                 }
-                if (id + 1 < str.Length && (str[id + 1] == '%' || str[id + 1] == '&' || str[id + 1] == '$'))
+                if (id + 1 < input_data.Length && (input_data[id + 1] == '%' || input_data[id + 1] == '&' || input_data[id + 1] == '$'))
                 {
-                    Sistem(str);
+                    Sistem(input_data);
                 }
                 else
                 {
-                    Symbols(str);
+                    Symbols(input_data);
                 }
             }
-            else if (str[id] >= '0' && str[id] <= '9')
+            else if (input_data[id] >= '0' && input_data[id] <= '9')
             {
-                Integer(str);
+                Integer(input_data);
             }
-            else if (((str[id] >= 'A') && (str[id] <= 'Z')) || ((str[id] >= 'a') && (str[id] <= 'z')) || str[id] == '_')
+            else if (((input_data[id] >= 'A') && (input_data[id] <= 'Z')) || ((input_data[id] >= 'a') && (input_data[id] <= 'z')) || input_data[id] == '_')
             {
-                Identifier(str);
+                Identifier(input_data);
             }
-            else if (str[id] == '%' || str[id] == '&' || str[id] == '$')
+            else if (input_data[id] == '%' || input_data[id] == '&' || input_data[id] == '$')
             {
-                Sistem(str);
+                Sistem(input_data);
             }
-            else if (str[id] == '\'')
+            else if (input_data[id] == '\'')
             {
-                String(str);
+                String(input_data);
             }
-            else if (str[id] == '/')
+            else if (input_data[id] == '/')
             {
-                if (id + 1 < str.Length)
+                if (id + 1 < input_data.Length)
                 {
-                    if (str[id] == '/' && str[id + 1] == '/')
+                    if (input_data[id] == '/' && input_data[id + 1] == '/')
                     {
-                        oneLineComment(str);
+                        oneLineComment(input_data);
                         return;
                     }
                     else
                     {
-                        Symbols(str);
+                        Symbols(input_data);
                     }
                 }
                 else
                 {
-                    Symbols(str);
+                    Symbols(input_data);
                 }
             }
-            else if (str[id] == '{')
+            else if (input_data[id] == '{')
             {
-                Comment(str);
+                Comment(input_data);
                 if (!comEnd)
                     return;
             }
-            else if (str[id] == '#' && id + 1 < str.Length && str[id + 1] >= '0' && str[id + 1] <= '9')
+            else if (input_data[id] == '#' && id + 1 < input_data.Length && input_data[id + 1] >= '0' && input_data[id + 1] <= '9')
             {
-                Char(str);
+                Char(input_data);
             }
             else
             {
-                Symbols(str);
+                Symbols(input_data);
             }
         }
         void Integer(string input_data)
@@ -544,15 +543,15 @@ namespace CompilerPascal
                 if (input_data[i] == '}')
                 {
                     comEnd = true;
-                    id += temp.Length;
-                    temp = null;
+                    category = "comments";
+                    Result();
                     return;
                 }
                 else if (i == input_data.Length - 1)
                 {
                     comEnd = false;
-                    id += temp.Length;
-                    temp = null;
+                    category = "comments";
+                    Result();
                     return;
                 }
             }
