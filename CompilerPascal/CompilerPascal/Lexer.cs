@@ -16,6 +16,13 @@ namespace CompilerPascal
     }
     class Lexer
     {
+        /*class LexerException : Exception
+        {
+            public LexerException(string message)
+            : base(message) 
+            { }
+        }*/
+
         public static List<Lexema> lexems = new List<Lexema>();
         public static string[] keyWords = {"absolute", "and", "array", "as", "asm", "begin", "break", "case",  "class", "const", "constructor", "destructor",
                                     "dispinterface", "div", "do", "downto", "else", "end", "except", "exports", "file", "for", "function", "finalization",
@@ -32,7 +39,8 @@ namespace CompilerPascal
         public static int line_number = 1;
         public static int id = 0;
         public static int value = 0;
-        public static bool comEnd = true;
+        public static bool startComment = false;
+        public static bool startOneLineComment = false;
         public static bool strEnd = true;
         public static bool error = false;
         public static bool eof = false;
@@ -63,7 +71,6 @@ namespace CompilerPascal
         public Lexema GetLexem(ref List<byte> input_data)
         {
             string str = null;
-
             while (input_data[0] == (byte)' ' || input_data[0] == 13) // 10-/n 13-/r
             {
                 first_symbol++;
@@ -89,57 +96,51 @@ namespace CompilerPascal
             }
             CheckSymbol(str);
             id = 0;
-            //Result
-            if (lexems[^1].categoryLexeme == "comments")
+
+            if (startComment)
             {
-                for (int i = 0; i < str.Length; i++)
+                int count = input_data.Count;
+                for (int i = 0; i < count; i++)
                 {
-                    input_data.RemoveAt(0);
+                    if ((char)input_data[0] == '}')
+                    {
+                        input_data.RemoveAt(0);
+                        startComment = false;
+                        Lexema l = new Lexema();
+                        return l;
+                    }
+                    else
+                    {
+                        if (input_data[0] == 10) line_number++;
+                        input_data.RemoveAt(0);
+                    }
                 }
-                if(input_data.Count != 0)
-                {
-                    Lexema l = new Lexema();
-                    return l;
-                }
-                
-                
             }
-            else
+            if (startOneLineComment)
             {
-                for (int i = 0; i < lexems[^1].initialLexema.Length; i++)
+                int count = input_data.Count;
+                for (int i = 0; i < count; i++)
                 {
                     input_data.RemoveAt(0);
-                    first_symbol++;
+                    if (input_data.Count == 0 || input_data[0] == 10 )
+                    {
+                        startOneLineComment = false;
+                        Lexema l = new Lexema();
+                        return l;
+                    }
                 }
+            }
+            //Result
+            for (int i = 0; i < lexems[^1].initialLexema.Length; i++)
+            {
+                input_data.RemoveAt(0);
+                first_symbol++;
             }
             return lexems[^1];
         }
         public void CheckSymbol(string input_data)
         {
-            if (!comEnd)
-            {
-                temp = null;
-                Comment(input_data);
-                if (!comEnd)
-                    return;
-            }
-            //if (input_data[id] == ' ') id++;
-            if (input_data[id] == '-' || input_data[id] == '+')
-            {
-                if (id + 1 < input_data.Length && input_data[id + 1] >= '0' && input_data[id + 1] <= '9')
-                {
-                    Integer(input_data);
-                }
-                if (id + 1 < input_data.Length && (input_data[id + 1] == '%' || input_data[id + 1] == '&' || input_data[id + 1] == '$'))
-                {
-                    Sistem(input_data);
-                }
-                else
-                {
-                    Symbols(input_data);
-                }
-            }
-            else if (input_data[id] >= '0' && input_data[id] <= '9')
+            if (input_data[id] >= '0' && input_data[id] <= '9')
             {
                 Integer(input_data);
             }
@@ -161,7 +162,7 @@ namespace CompilerPascal
                 {
                     if (input_data[id] == '/' && input_data[id + 1] == '/')
                     {
-                        oneLineComment(input_data);
+                        startOneLineComment = true;
                         return;
                     }
                     else
@@ -176,8 +177,7 @@ namespace CompilerPascal
             }
             else if (input_data[id] == '{')
             {
-                Comment(input_data);
-                if (!comEnd)
+                startComment = true;
                     return;
             }
             else if (input_data[id] == '#' && id + 1 < input_data.Length && input_data[id + 1] >= '0' && input_data[id + 1] <= '9')
@@ -191,96 +191,44 @@ namespace CompilerPascal
         }
         void Integer(string input_data)
         {
+            category = "integer";
             for (int i = id; i < input_data.Length; i++)
             {
-                if ((input_data[i] >= '0' && input_data[i] <= '9') || (input_data[i] == '.') || ((input_data[i] == '-') || (input_data[i] == '+')) && (temp == null))//интеджер
+                if ((input_data[i] >= '0' && input_data[i] <= '9') || (input_data[i] == '.'))
                 {
-                    if (input_data[i] == '.')
+                    if (input_data[i] == '.' && i + 1 < input_data.Length && input_data[i + 1] == '.')
                     {
-                        if (i + 1 == input_data.Length || ((i + 2 < input_data.Length) && !(input_data[i + 1] >= '0' && input_data[i + 1] <= '9')))
+                        Symbols(input_data);
+                        return;
+                    }
+                    else if (input_data[i] == '.')
+                    {
+                        temp = null;
+                        Real(input_data);
+                        return;
+                    }
+                    
+                    temp += input_data[i];
+                    if (i == input_data.Length - 1 || (i + 1 < input_data.Length && input_data[i + 1] == ' '))
+                    {
+                        if (error)
                         {
-                            meaning = temp;
+                            Error(1);
+                            return;
+                        }
+                        meaning = temp;
+                        bool success = int.TryParse(meaning, out value);
+                        if (success)
+                        {
                             Result();
                             return;
                         }
-                        temp += input_data[i];
-                        category = "real";
-                    }
-                    else
-                    {
-                        if (category == null)
-                            category = "integer";
-                        temp += input_data[i];
-                        if (i == input_data.Length - 1)
+                        else
                         {
-                            meaning = temp;
-                            if (category == "integer")
-                            {
-                                bool success = int.TryParse(meaning, out value);
-                                if (success)
-                                {
-                                    Result();
-                                    return;
-                                }
-                                else
-                                {
-                                    Error(2);
-                                    return;
-                                }
-                            }
-                            if (category == "real")
-                            {
-                                Result();
-                                return;
-                            }
+                            Error(2);
+                            return;
                         }
                     }
-                }
-                else if (input_data[i] == 'e' || input_data[i] == 'E')
-                {
-                    temp += input_data[i];
-                    category = "real";
-                    if (i + 1 < input_data.Length && (input_data[i + 1] == '-' || input_data[i + 1] == '+'))
-                    {
-                        temp += input_data[i + 1];
-                        i++;
-                    }
-                    else if (i == input_data.Length - 1 || input_data[i] == ' ')
-                    {
-                        Error(1);
-                        return;
-                    }
-                }
-                else if (input_data[i] == ' ')
-                {
-                    meaning = temp;
-                    if (error)
-                    {
-                        Error(1);
-                        return;
-                    }
-                    bool success = int.TryParse(meaning, out value);
-                    if (success)
-                    {
-                        Result();
-                        return;
-                    }
-                    else
-                    {
-                        Error(2);
-                        return;
-                    }
-                }
-                else if (input_data[i] == '+' || input_data[i] == '+')
-                {
-                    meaning = temp;
-                    if (error)
-                    {
-                        Error(1);
-                        return;
-                    }
-                    Result();
-                    return;
                 }
                 else if (((input_data[i] >= 'A') && (input_data[i] <= 'Z')) || ((input_data[i] >= 'a') && (input_data[i] <= 'z')) || input_data[i] == '_')
                 {
@@ -295,6 +243,65 @@ namespace CompilerPascal
                     if (error)
                     {
                         Error(1);
+                        return;
+                    }
+                    Result();
+                    return;
+                }
+            }
+        }
+        void Real(string input_data)
+        {
+            int doteCount = 0;
+            int eCount = 0;
+            category = "real";
+            for (int i = id; i < input_data.Length; i++)
+            {
+                if ((input_data[i] >= '0' && input_data[i] <= '9') || (input_data[i] == '.'))
+                {
+                    temp += input_data[i];
+                    if (input_data[i] == '.') doteCount++;
+                    if (i == input_data.Length - 1 || (i + 1 < input_data.Length && input_data[i + 1] == ' '))
+                    {
+                        meaning = temp;
+                        if (doteCount > 1 || eCount > 1)
+                        {
+                            Error(5);
+                            return;
+                        }
+                        Result();
+                        return;
+                    }
+                }
+                else if (input_data[i] == 'e' || input_data[i] == 'E')
+                {
+                    temp += input_data[i];
+                    if (input_data[i] == 'e') eCount++;
+                    
+                    if (i + 1 < input_data.Length && (input_data[i + 1] == '-' || input_data[i + 1] == '+'))
+                    {
+                        temp += input_data[i + 1];
+                        i++;
+                    }
+                    else if (i == input_data.Length - 1 || input_data[i] == ' ')
+                    {
+                        Error(1);
+                        return;
+                    }
+                }
+                else if (((input_data[i] >= 'A') && (input_data[i] <= 'Z')) || ((input_data[i] >= 'a') && (input_data[i] <= 'z')) || input_data[i] == '_')
+                {
+                    temp += input_data[i];
+                    error = true;
+                    Identifier(input_data);
+                    return;
+                }
+                else
+                {
+                    meaning = temp;
+                    if (doteCount > 1 || eCount > 1)
+                    {
+                        Error(5);
                         return;
                     }
                     Result();
@@ -452,24 +459,15 @@ namespace CompilerPascal
         void Sistem(string input_data)
         {
             long answer = 0; char top = '9'; int up = 10;
-            bool negative = false;
             category = "integer";
             input_data = input_data.ToUpper();
 
             for (int i = id; i < input_data.Length; i++)
             {
-                if (input_data[i] == '+' || input_data[i] == '-')
+                if (input_data[i] == ' ')
                 {
-                    if (input_data[i] == '-') negative = true;
-                    temp += input_data[i];
-                    i++;
-                }
-                else if (input_data[i] == ' ')
-                {
-                    if (negative) answer = 0 - answer;
                     meaning = answer.ToString();
-
-                    if (answer > 2147483647 || answer < -2147483648)
+                    if (answer > 2147483647)
                     {
                         Error(2);
                         return;
@@ -482,8 +480,7 @@ namespace CompilerPascal
                     Result();
                     return;
                 }
-
-                if (input_data[i] == '%' || input_data[i] == '&' || input_data[i] == '$')
+                else if (input_data[i] == '%' || input_data[i] == '&' || input_data[i] == '$')
                 {
                     if (i + 1 == input_data.Length)
                     {
@@ -520,7 +517,6 @@ namespace CompilerPascal
 
                 int comp = input_data[i] - '0';
                 int border = top - '0';
-
                 if (comp > border)
                 {
                     error = true;
@@ -534,18 +530,11 @@ namespace CompilerPascal
                     }
                     temp += input_data[i];
                     answer = (answer * up) + comp;
-                    if ((!negative) && answer > 2147483647)
-                    {
-                        Error(2);
-                        return;
-                    }
                     meaning = answer.ToString();
                 }
             }
-            if (negative) answer = 0 - answer;
             meaning = answer.ToString();
-
-            if (answer > 2147483647 || answer < -2147483648)
+            if (answer > 2147483647)
             {
                 Error(2);
                 return;
@@ -557,34 +546,6 @@ namespace CompilerPascal
             }
             Result();
             return;
-        }
-        void Comment(string input_data)
-        {
-            for (int i = id; i < input_data.Length; i++)
-            {
-                temp += input_data[i];
-                if (input_data[i] == '}')
-                {
-                    comEnd = true;
-                    meaning = temp;
-                    category = "comments";
-                    Result();
-                    return;
-                }
-                else if (i == input_data.Length - 1)
-                {
-                    comEnd = false;
-                    meaning = temp;
-                    category = "comments";
-                    Result();
-                    return;
-                }
-            }
-        }
-        void oneLineComment(string input_data)
-        {
-            category = "comments";
-            Result();
         }
         void Symbols(string input_data)
         {
@@ -710,7 +671,6 @@ namespace CompilerPascal
             Lexema result = new Lexema();
             result = new Lexema() { numberLine = line_number, numberSymbol = first_symbol, categoryLexeme = category, valueLexema = meaning, initialLexema = temp };
             lexems.Add(result);
-            //id += temp.Length;
             temp = null;
             meaning = null;
             category = null;

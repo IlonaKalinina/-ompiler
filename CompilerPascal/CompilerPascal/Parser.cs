@@ -26,37 +26,44 @@ namespace CompilerPascal
             doParse = new Node();
             using (FileStream fstream = File.OpenRead(path))
             {
-                byte[] textFromFile = new byte[fstream.Length];
-                fstream.Read(textFromFile);
+                byte[] in_file = new byte[fstream.Length];
+                fstream.Read(in_file);
 
                 List<byte> input_data = new List<byte>();
-                for (int i = 0; i < textFromFile.Length; i++)
+                for (int i = 0; i < in_file.Length; i++)
                 {
-                    input_data.Add(textFromFile[i]);
+                    input_data.Add(in_file[i]);
                 }
                 nowLexem = lexer.GetLexem(ref input_data);
                 doParse = Expression(ref input_data);
+
+                /*if (nowLexem.valueLexema != null)
+                {
+                    doParse = new Node()
+                    {
+                        type = "Error",
+                        value = $"Syntax error on line {nowLexem.numberLine}, \"\" "
+                    };
+                }*/
             }
-            //Console.WriteLine();
-            
             return;
         }
-        public Node Expression(ref List<byte> text)
+        public Node Expression(ref List<byte> input_data)
         {
-            Node leftСhild = Term(ref text);
+            Node leftСhild = Term(ref input_data);
             while (nowLexem.valueLexema == "+" || nowLexem.valueLexema == "-")
             {
                 var operation = nowLexem.valueLexema;
-                if (text.Count > 0)
+                if (input_data.Count > 0)
                 {
-                    nowLexem = lexer.GetLexem(ref text);
+                    nowLexem = lexer.GetLexem(ref input_data);
                 }
-                Node rightСhild = Term(ref text);
+                Node rightСhild = Term(ref input_data);
                 leftСhild = new Node()
                 {
                     type = "BinOp",
                     value = operation,
-                    children = new List<Node?> { leftСhild, rightСhild }
+                    children = new List<Node> { leftСhild, rightСhild }
                 };
                 if (rightСhild.type == "Error")
                 {
@@ -75,7 +82,10 @@ namespace CompilerPascal
             Node leftСhild = Factor(ref input_data);
             if (leftСhild.type != "Error")
             {
-                nowLexem = lexer.GetLexem(ref input_data);
+                if (input_data.Count > 0)
+                {
+                    nowLexem = lexer.GetLexem(ref input_data);
+                }
                 while (nowLexem.valueLexema == "*" || nowLexem.valueLexema == "/")
                 {
                     var BinOp = nowLexem.valueLexema;
@@ -158,6 +168,7 @@ namespace CompilerPascal
                 }
                 return nextExpression;
             }
+            
             return new Node()
             {
                 type = "Error",
