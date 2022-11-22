@@ -1,2 +1,0 @@
-integer a;
-string str;
