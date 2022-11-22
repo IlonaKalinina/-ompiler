@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ilona\\OneDrive\\Рабочий стол\\Pascal-compiler\\CompilerPascal\\CompilerPascal\\CompilerPascal.csproj": {}
+    "C:\\Users\\ilona\\OneDrive\\Рабочий стол\\учёба\\Pascal-compiler\\CompilerPascal\\CompilerPascal\\CompilerPascal.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ilona\\OneDrive\\Рабочий стол\\Pascal-compiler\\CompilerPascal\\CompilerPascal\\CompilerPascal.csproj": {
+    "C:\\Users\\ilona\\OneDrive\\Рабочий стол\\учёба\\Pascal-compiler\\CompilerPascal\\CompilerPascal\\CompilerPascal.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ilona\\OneDrive\\Рабочий стол\\Pascal-compiler\\CompilerPascal\\CompilerPascal\\CompilerPascal.csproj",
+        "projectUniqueName": "C:\\Users\\ilona\\OneDrive\\Рабочий стол\\учёба\\Pascal-compiler\\CompilerPascal\\CompilerPascal\\CompilerPascal.csproj",
         "projectName": "CompilerPascal",
-        "projectPath": "C:\\Users\\ilona\\OneDrive\\Рабочий стол\\Pascal-compiler\\CompilerPascal\\CompilerPascal\\CompilerPascal.csproj",
+        "projectPath": "C:\\Users\\ilona\\OneDrive\\Рабочий стол\\учёба\\Pascal-compiler\\CompilerPascal\\CompilerPascal\\CompilerPascal.csproj",
         "packagesPath": "C:\\Users\\ilona\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ilona\\OneDrive\\Рабочий стол\\Pascal-compiler\\CompilerPascal\\CompilerPascal\\obj\\",
+        "outputPath": "C:\\Users\\ilona\\OneDrive\\Рабочий стол\\учёба\\Pascal-compiler\\CompilerPascal\\CompilerPascal\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",

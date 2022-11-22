@@ -40,7 +40,7 @@ namespace CompilerPascal
             string ans_path;
             string out_path;
 
-            for (int i = 1; i <= 56; i++)
+            for (int i = 1; i <= 55; i++)
             {
                 in_path = $@"..\..\..\..\..\Tests\input_tests\{i}_in.txt";
                 ans_path = $@"..\..\..\..\..\Tests\answer_tests\{i}_ans.txt";
@@ -119,7 +119,7 @@ namespace CompilerPascal
             string ans_path;
             string out_path;
 
-            for (int i = 1; i <= 56; i++)
+            for (int i = 53; i <= 53; i++)
             {
                 in_path = $@"..\..\..\..\..\Tests\input_tests\{i}_in.txt";
                 ans_path = $@"..\..\..\..\..\Tests\answer_tests\{i}_ans.txt";
@@ -213,11 +213,12 @@ namespace CompilerPascal
 
                 if (wrong)
                 {
-                    Console.WriteLine($"{i} | WA\n");
+                    Console.WriteLine($"{i} | WA");
                 }
                 else
                 {
-                    Console.WriteLine($"{i} | OK\n");
+                    Console.WriteLine($"{i} | OK");
+                    Console.WriteLine();
                 }
                 var exit = Console.ReadKey();
                 if (exit.Key == ConsoleKey.Escape)
@@ -230,6 +231,7 @@ namespace CompilerPascal
                 }
             }
         }
+
         static void GeneralTestingParser()
         {
             Parser P = new Parser();
@@ -245,6 +247,8 @@ namespace CompilerPascal
                // out_path = $@"..\..\..\..\..\Tests\output_tests\{i}_out.txt";
 
                 P.ReadFileParser(in_path);
+                List<string> answer = new List<string>();
+
                 RunTree(P.doParse);
             }
         }
