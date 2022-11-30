@@ -1,0 +1,5 @@
+1 1 real 1.1e-12 1.1e-12
+2 1 real 1.1e12 1.1e12
+3 1 real 1.1e+12 1.1e+12
+Syntax error on line 4
+End File

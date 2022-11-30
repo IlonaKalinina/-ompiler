@@ -1,2 +1,0 @@
-1 1 integer 1 1
-2 1 end_file end. end.
