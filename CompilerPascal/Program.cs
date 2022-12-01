@@ -7,7 +7,7 @@ namespace CompilerPascal
 {
     class Program
     {
-        public static bool eof;
+        public static bool eof = false;
          static void Main(string[] args)
          {
              try

@@ -8,6 +8,23 @@ using System.Threading.Tasks;
 
 namespace CompilerPascal.Parser
 {
+    /*
+    class Node
+    {
+    }
+    class BinOP : Node
+    {
+        public string op = "";
+        public List<Node> children;
+    }
+    class Num : Node
+    {
+        public string value = "";
+    }
+    class Variable: Node
+    {
+        public string value = "";
+    }*/
     class Node
     {
         public string type = "";
@@ -17,9 +34,7 @@ namespace CompilerPascal.Parser
     class Parser
     {
         Lexer.Lexema nowLexem;
-        int closedParenthesiCounter;
         public Node doParse = new Node();
-        public readonly StreamReader readFile;
         private Lexer.Lexer lexer;
 
        public Parser(string fileName)
@@ -27,7 +42,6 @@ namespace CompilerPascal.Parser
             lexer = new Lexer.Lexer(fileName);
             nowLexem = lexer.GetLexem();
 
-            closedParenthesiCounter = 0;
             doParse = Expression(nowLexem.valueLexema);
         }
 
@@ -37,7 +51,7 @@ namespace CompilerPascal.Parser
             while (nowLexem.valueLexema == "+" || nowLexem.valueLexema == "-")
             {
                 var operation = nowLexem.valueLexema;
-                if (nowLexem.categoryLexeme != "EndOfFile")
+                if (nowLexem.categoryLexeme != "End File")
                 {
                     nowLexem = lexer.GetLexem();
                 }
@@ -65,19 +79,19 @@ namespace CompilerPascal.Parser
             Node leftСhild = Factor(input_data);
             if (leftСhild.type != "Error")
             {
-                if (nowLexem.categoryLexeme != "EndOfFile")
+                if (nowLexem.categoryLexeme != "End File")
                 {
                     nowLexem = lexer.GetLexem();
                 }
                 while (nowLexem.valueLexema == "*" || nowLexem.valueLexema == "/")
                 {
                     var BinOp = nowLexem.valueLexema;
-                    if (nowLexem.categoryLexeme != "EndOfFile")
+                    if (nowLexem.categoryLexeme != "End File")
                     {
                         nowLexem = lexer.GetLexem();
                     }
                     Node rightСhild = Factor(input_data);
-                    if (nowLexem.categoryLexeme != "EndOfFile")
+                    if (nowLexem.categoryLexeme != "End File")
                     {
                         nowLexem = lexer.GetLexem();
                     }
@@ -121,7 +135,7 @@ namespace CompilerPascal.Parser
             if (nowLexem.valueLexema == "(")
             {
                 Node nextExpression = new Node();
-                if (nowLexem.categoryLexeme != "EndOfFile")
+                if (nowLexem.categoryLexeme != "End File")
                 {
                     nowLexem = lexer.GetLexem();
                     nextExpression = Expression(input_data);
@@ -131,30 +145,23 @@ namespace CompilerPascal.Parser
                     nextExpression = new Node()
                     {
                         type = "Error",
-                        value = $"Syntax error on line {nowLexem.numberLine}, \")\" expected"
+                        value = $"No right bracket on line {nowLexem.numberLine - 1}"
                     };
                 }
                 if (nowLexem.valueLexema != ")")
                 {
-                    if (nowLexem.categoryLexeme != "EndOfFile")
+                    nextExpression = new Node()
                     {
-                        closedParenthesiCounter++;
-                    }
-                    else
-                    {
-                        nextExpression = new Node()
-                        {
-                            type = "Error",
-                            value = $"Syntax error on line {nowLexem.numberLine}, \")\" expected"
-                        };
-                    }
+                        type = "Error",
+                        value = $"No right bracket on line {nowLexem.numberLine - 1}"
+                    };
                 }
                 return nextExpression;
             }
             return new Node()
             {
                 type = "Error",
-                value = $"Syntax error on line {nowLexem.numberLine}, don't have factor"
+                value = $"Syntax error on line {nowLexem.numberLine - 1}, don't have factor"
             };
         }
     }

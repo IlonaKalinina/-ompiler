@@ -40,7 +40,7 @@ namespace CompilerPascal.Test
 
         [TestMethod]
         [DynamicData(nameof(TestMethodInput))]
-        public void Test_Lexer(string fileName, string keys)
+        public void Test(string fileName, string keys)
         {
             var outAns = GetOutput.RunAndGetOutputs(fileName, keys);
             Assert.AreEqual(outAns.Item2, outAns.Item1);
