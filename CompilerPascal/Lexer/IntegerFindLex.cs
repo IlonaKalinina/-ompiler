@@ -9,23 +9,49 @@ namespace CompilerPascal.Lexer
         public static void Integer(string input_data)
         {
             Lexer.category = "integer";
+            bool insignZeros = false;
             for (int i = Lexer.indicator; i < input_data.Length; i++)
             {
+                if (input_data[i] == '.' && i + 1 < input_data.Length && input_data[i + 1] == '.')
+                {
+                    ResultOut.Result();
+                    return;
+                }
+                else if (input_data[i] == '.')
+                {
+                    Lexer.temp = null;
+                    RealFindLex.Real(input_data);
+                    return;
+                }
+
                 if ((input_data[i] >= '0' && input_data[i] <= '9') || (input_data[i] == '.'))
                 {
-                    if (input_data[i] == '.' && i + 1 < input_data.Length && input_data[i + 1] == '.')
+                    if (Lexer.temp == null && input_data[i] == '0')
                     {
-                        SymbolsFind.Symbols(input_data);
-                        return;
+                        Lexer.temp += input_data[i];
+                        insignZeros = true;
+                        continue;
+                    } 
+                    if (input_data[i] > '0' )
+                    {
+                        insignZeros = false;
                     }
-                    else if (input_data[i] == '.')
+                    if (insignZeros)
                     {
-                        Lexer.temp = null;
-                        RealFindLex.Real(input_data);
-                        return;
+                        Lexer.temp += input_data[i];
+
+                        if (i + 1 == input_data.Length && Lexer.meaning == null)
+                        {
+                            Lexer.meaning = "0";
+                            ResultOut.Result();
+                            return;
+                        }
+                        continue;
                     }
 
                     Lexer.temp += input_data[i];
+                    Lexer.meaning += input_data[i];
+
                     if (i == input_data.Length - 1 || (i + 1 < input_data.Length && input_data[i + 1] == ' '))
                     {
                         if (Lexer.error)
@@ -33,9 +59,6 @@ namespace CompilerPascal.Lexer
                             ExepError.Error(1);
                             return;
                         }
-
-                        Lexer.meaning = Lexer.temp;
-
                         bool success = int.TryParse(Lexer.meaning, out Lexer.value);
                         if (success)
                         {

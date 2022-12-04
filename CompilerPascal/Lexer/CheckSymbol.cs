@@ -13,10 +13,20 @@ namespace CompilerPascal.Lexer
                 CommentsFind.Comments(input_data);
                 return;
             }
-            if (input_data[Lexer.indicator] == ' ') Lexer.indicator++;
-            while (input_data[Lexer.indicator] == '\t')
+            if (Lexer.startString)
+            {
+                StringFindLex.String(input_data);
+                return;
+            }
+            
+            while (input_data[Lexer.indicator] == ' ' || input_data[Lexer.indicator] == '\t')
             {
                 Lexer.indicator++;
+                if (Lexer.indicator == input_data.Length)
+                {
+                    Lexer.foundlexem = null;
+                    return;
+                }
             }
             if (Lexer.indicator < input_data.Length)
             {

@@ -8,59 +8,61 @@ namespace CompilerPascal
     class Program
     {
         public static bool eof = false;
-         static void Main(string[] args)
-         {
-             try
-             {
-                 if (args.Contains("lex"))
-                 {
-                     var lexer = new Lexer.Lexer(args[0]);
-                     //var lexer = new Lexer.Lexer("../../../../CompilerPascal.Test/Tests/LexerTests/Files/1_1.in");
+        static void Main(string[] args)
+        {
+            try
+            {
+                if (args.Contains("lex"))
+                {
+                    var lexer = new Lexer.Lexer(args[0]);
+                    //var lexer = new Lexer.Lexer("../../../../CompilerPascal.Test/Tests/LexerTests/Files/1_1.in");
 
-                     eof = false;
-                     while (!eof)
-                     {
-                         var token = lexer.GetLexem();
+                    eof = false;
+                    while (!eof)
+                    {
+                        var token = lexer.GetLexem();
 
-                         if (token != null)
-                         {
-                             if (token.categoryLexeme != "error" && token.categoryLexeme != "comments")
-                             {
-                                 if (token.categoryLexeme == "End File")
-                                 {
-                                     Console.Write($"{token.categoryLexeme}");
-                                     eof = true;
-                                 }
-                                 else
-                                 {
-                                     Console.WriteLine($"{token.numberLine} {token.numberSymbol} {token.categoryLexeme} {token.valueLexema} {token.initialLexema}");
-                                 }
-                             }
-                             else if (token.categoryLexeme == "error")
-                             {
-                                 Console.WriteLine($"{token.valueLexema}");
-                             }
-                         }
-                         else
-                         {
-                             eof = true;
-                         }
-                     }
-                 }
-                 if (args.Contains("pars"))
-                 {
+                        if (token != null)
+                        {
+                            if (token.categoryLexeme != "error" && token.categoryLexeme != "comments")
+                            {
+                                if (token.categoryLexeme == "End File")
+                                {
+                                    Console.Write($"{token.categoryLexeme}");
+                                    eof = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"{token.numberLine} {token.numberSymbol} {token.categoryLexeme} {token.valueLexema} {token.initialLexema}");
+                                }
+                            }
+                            else if (token.categoryLexeme == "error")
+                            {
+                                Console.WriteLine($"{token.valueLexema}");
+                            }
+                        }
+                        else if (token != null && token.categoryLexeme == "End File")
+                        {
+                            Console.Write($"{token.categoryLexeme}");
+                            eof = true;
+                        }
+                    }
+                }
+                if (args.Contains("pars"))
+                {
                     Parser.Parser P = new Parser.Parser(args[0]);
+                    //Parser.Parser P = new Parser.Parser("../../../../CompilerPascal.Test/Tests/ParserTests/Files/3.in");
 
                     List<string> answer = new List<string>();
 
                     RunTree(P.doParse);
                 }
-             }
-             catch
-             {
-                 Console.WriteLine("File not found");
-             }
-         }
+            }
+            catch
+            {
+                Console.WriteLine("File not found");
+            }
+        }
 
         static List<string> answerList = new List<string>();
 
@@ -98,12 +100,14 @@ namespace CompilerPascal
             {
                 numNode++;
                 numChildren = 0;
+
                 RunTree(doParse.children[0]);
                 numChildren = -1;
 
                 if (doParse.children.Count > 1)
                 {
                     numChildren = 1;
+
                     RunTree(doParse.children[1]);
                     numChildren = -1;
                 }

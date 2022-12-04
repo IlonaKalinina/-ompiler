@@ -21,6 +21,7 @@ namespace CompilerPascal.Lexer
         public static int value;
 
         public static bool startComment;
+        public static bool startString;
         public static bool startOneLineComment;
         public static bool strEnd;
         public static bool error;
@@ -46,6 +47,7 @@ namespace CompilerPascal.Lexer
             value     = 0;
 
             startComment        = false;
+            startString         = false;
             startOneLineComment = false;
 
             strEnd = true;
@@ -54,29 +56,53 @@ namespace CompilerPascal.Lexer
 
         public Lexema GetLexem()
         {
-            CommentNotEnd:
-            if (indicator + 1 > input_data.Length)
+            CommentOrStringNotEnd:
+            if (input_data != null && indicator + 1 > input_data.Length)
             {
                 input_data = readFile.ReadLine();
                 indicator = 0;
                 first_symbol = 1;
                 line_number++;
 
+                while (input_data == "")
+                {
+                    input_data = readFile.ReadLine();
+                    line_number++;
+                }
                 if (input_data == null)
                 {
+                    if (startComment || startString)
+                    {
+                        if (startComment) ExepError.Error(7);
+                        if (startString)  ExepError.Error(3);
+                        startComment = false;
+                        return foundlexem;
+                    }
                     category = "End File";
                     ResultOut.Result();
                     return foundlexem;
                 }
+            }else if (input_data == null)
+            {
+                category = "End File";
+                ResultOut.Result();
+                return foundlexem;
             }
             CheckSymbol.CheckFirstSymbol(input_data);
 
-            if (startComment)
+            if (startComment || startString)
             {
-                while (startComment)
+                while (startComment || startString)
                 {
-                    goto CommentNotEnd;
+                    goto CommentOrStringNotEnd;
                 }
+            }
+
+            if (foundlexem == null)
+            {
+                category = "End File";
+                ResultOut.Result();
+                return foundlexem;
             }
             return foundlexem;
         }

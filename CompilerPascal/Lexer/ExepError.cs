@@ -21,13 +21,19 @@ namespace CompilerPascal.Lexer
                     textError = $"Range check error while evaluating constants on line {Lexer.line_number}";
                     break;
                 case 3:
-                    textError = $"String exceeds line on {Lexer.line_number} line";
+                    textError = $"String exceeds line";
                     break;
                 case 4:
                     textError = $"Illegal char constant on line {Lexer.line_number}";
                     break;
                 case 5:
                     textError = $"Syntax error on line {Lexer.line_number}";
+                    break;
+                case 6:
+                    textError = $"Compilation aborted, line {Lexer.line_number}";
+                    break;
+                case 7:
+                    textError = $"Unexpected end of file";
                     break;
                 default:
                     textError = $"Fatal Error {Lexer.line_number}";
@@ -41,7 +47,7 @@ namespace CompilerPascal.Lexer
                 valueLexema = textError,
                 initialLexema = Lexer.temp
             };
-            Lexer.indicator += Lexer.temp.Length;
+            if (Lexer.temp != null) Lexer.indicator += Lexer.temp.Length;
             Lexer.temp = null;
             Lexer.meaning = null;
             Lexer.category = null;

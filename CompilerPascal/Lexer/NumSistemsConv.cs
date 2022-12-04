@@ -18,8 +18,7 @@ namespace CompilerPascal.Lexer
                 {
                     if (i + 1 == input_data.Length)
                     {
-                        Lexer.temp += input_data[i];
-                        ExepError.Error(1);
+                        SymbolsFind.Symbols(input_data);
                         return;
                     }
                     else
@@ -45,8 +44,7 @@ namespace CompilerPascal.Lexer
                 }
                 else if (input_data[i] == 46)
                 {
-                    ExepError.Error(1);
-                    return;
+                    goto ResultOut;
                 }
 
                 int comp = input_data[i] - '0';
@@ -67,6 +65,7 @@ namespace CompilerPascal.Lexer
                     Lexer.meaning = answer.ToString();
                 }
             }
+            ResultOut:
             Lexer.meaning = answer.ToString();
             if (answer > 2147483647)
             {

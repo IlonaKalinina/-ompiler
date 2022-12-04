@@ -15,18 +15,16 @@ namespace CompilerPascal.Lexer
                 {
                     Lexer.temp += input_data[i];
 
-                    /*if (Lexer.temp == "EOF")
-                    {
-                        Program.eof = true;
-                        Lexer.category = "EndOfFile";
-                        Lexer.meaning = Lexer.temp;
-                        ResultOut.Result();
-                        return;
-                    }*/
-
                     if (i == input_data.Length - 1)
                     {
                         Lexer.meaning = Lexer.temp;
+
+                        if (Lexer.temp.Length > 127)
+                        {
+                            ExepError.Error(6);
+                            return;
+                        }
+
                         KeyWordFind.KeyWord();
                         ResultOut.Result();
                         return;

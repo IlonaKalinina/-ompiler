@@ -8,34 +8,11 @@ using System.Threading.Tasks;
 
 namespace CompilerPascal.Parser
 {
-    /*
-    class Node
-    {
-    }
-    class BinOP : Node
-    {
-        public string op = "";
-        public List<Node> children;
-    }
-    class Num : Node
-    {
-        public string value = "";
-    }
-    class Variable: Node
-    {
-        public string value = "";
-    }*/
-    class Node
-    {
-        public string type = "";
-        public string value = "";
-        public List<Node> children;
-    }
     class Parser
     {
         Lexer.Lexema nowLexem;
         public Node doParse = new Node();
-        private Lexer.Lexer lexer;
+        private readonly Lexer.Lexer lexer;
 
        public Parser(string fileName)
         {
@@ -48,26 +25,40 @@ namespace CompilerPascal.Parser
         public Node Expression(string input_data)
         {
             Node leftСhild = Term(input_data);
-            while (nowLexem.valueLexema == "+" || nowLexem.valueLexema == "-")
+            if (leftСhild.category != "error")
             {
-                var operation = nowLexem.valueLexema;
-                if (nowLexem.categoryLexeme != "End File")
+                if (nowLexem.valueLexema == "+" || nowLexem.valueLexema == "-")
                 {
-                    nowLexem = lexer.GetLexem();
+                    while (nowLexem.valueLexema == "+" || nowLexem.valueLexema == "-")
+                    {
+                        var BinOp = nowLexem.valueLexema;
+                        if (nowLexem.categoryLexeme != "End File")
+                        {
+                            nowLexem = lexer.GetLexem();
+                        }
+                        Node rightСhild = Term(input_data);
+                        leftСhild = new Node()
+                        {
+                            category = "binOp",
+                            value = BinOp,
+                            children = new List<Node> { leftСhild, rightСhild }
+                        };
+                        if (rightСhild.category == "error")
+                        {
+                            return new Node()
+                            {
+                                category = "error",
+                                value = rightСhild.value
+                            };
+                        }
+                    }
                 }
-                Node rightСhild = Term(input_data);
-                leftСhild = new Node()
-                {
-                    type = "BinOp",
-                    value = operation,
-                    children = new List<Node> { leftСhild, rightСhild }
-                };
-                if (rightСhild.type == "Error")
+                else if (nowLexem.valueLexema != null && nowLexem.valueLexema != "*" && nowLexem.valueLexema != "/" && nowLexem.valueLexema != ")")
                 {
                     return new Node()
                     {
-                        type = "Error",
-                        value = rightСhild.value
+                        category = "error",
+                        value = $"Syntax error on line {nowLexem.numberLine}, missing binary operation"
                     };
                 }
             }
@@ -77,7 +68,7 @@ namespace CompilerPascal.Parser
         public Node Term(string input_data)
         {
             Node leftСhild = Factor(input_data);
-            if (leftСhild.type != "Error")
+            if (leftСhild.category != "error")
             {
                 if (nowLexem.categoryLexeme != "End File")
                 {
@@ -97,19 +88,20 @@ namespace CompilerPascal.Parser
                     }
                     leftСhild = new Node()
                     {
-                        type = "BinOp",
+                        category = "binOp",
                         value = BinOp,
                         children = new List<Node> { leftСhild, rightСhild }
                     };
-                    if (rightСhild.type == "Error")
+                    if (rightСhild.category == "error")
                     {
                         return new Node()
                         {
-                            type = "Error",
+                            category = "error",
                             value = rightСhild.value
                         };
                     }
                 }
+
             }
             return leftСhild;
         }
@@ -120,7 +112,7 @@ namespace CompilerPascal.Parser
             {
                 return new Node()
                 {
-                    type = "Number",
+                    category = "number",
                     value = nowLexem.valueLexema
                 };
             }
@@ -128,41 +120,65 @@ namespace CompilerPascal.Parser
             {
                 return new Node()
                 {
-                    type = "Identifier",
+                    category = "identifier",
                     value = nowLexem.valueLexema
                 };
             }
+
             if (nowLexem.valueLexema == "(")
             {
                 Node nextExpression = new Node();
                 if (nowLexem.categoryLexeme != "End File")
                 {
                     nowLexem = lexer.GetLexem();
+                    if (nowLexem.valueLexema == ")")
+                    {
+                        return new Node()
+                        {
+                            category = "error",
+                            value = $"Syntax error on line {nowLexem.numberLine}, don't have factor"
+                        };
+                    }
                     nextExpression = Expression(input_data);
                 }
-                else
+                if (nowLexem.valueLexema != ")" && nextExpression.category != "error")
                 {
-                    nextExpression = new Node()
+                    if (nowLexem.valueLexema != null)
                     {
-                        type = "Error",
-                        value = $"No right bracket on line {nowLexem.numberLine - 1}"
-                    };
-                }
-                if (nowLexem.valueLexema != ")")
-                {
-                    nextExpression = new Node()
+                        return new Node()
+                        {
+                            category = "error",
+                            value = $"No right bracket on line {nowLexem.numberLine}"
+                        };
+                    }
+                    else
                     {
-                        type = "Error",
-                        value = $"No right bracket on line {nowLexem.numberLine - 1}"
-                    };
+                        return new Node()
+                        {
+                            category = "error",
+                            value = $"No right bracket on line {nowLexem.numberLine - 1}"
+                        };
+                    }
                 }
                 return nextExpression;
             }
-            return new Node()
+
+            if (nowLexem.valueLexema != null)
             {
-                type = "Error",
-                value = $"Syntax error on line {nowLexem.numberLine - 1}, don't have factor"
-            };
+                return new Node()
+                {
+                    category = "error",
+                    value = $"Syntax error on line {nowLexem.numberLine}, don't have factor"
+                };
+            } else
+            {
+                return new Node()
+                {
+                    category = "error",
+                    value = $"Syntax error on line {nowLexem.numberLine - 1}, don't have factor"
+                };
+            }
+               
         }
     }
 }
