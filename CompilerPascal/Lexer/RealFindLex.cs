@@ -36,9 +36,12 @@ namespace CompilerPascal.Lexer
 
                     if (i == input_data.Length - 1 || (i + 1 < input_data.Length && input_data[i + 1] == ' '))
                     {
-                        while (mantisa.Length < 17 + countWholePart)
+                        if (mantisa != null)
                         {
-                            mantisa += '0';
+                            while (mantisa.Length < 17 + countWholePart)
+                            {
+                                mantisa += '0';
+                            }
                         }
 
                         if (startExp)

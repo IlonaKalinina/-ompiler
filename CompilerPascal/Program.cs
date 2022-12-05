@@ -48,15 +48,15 @@ namespace CompilerPascal
                         }
                     }
                 }
-                if (args.Contains("pars"))
-                {
-                    Parser.Parser P = new Parser.Parser(args[0]);
-                    //Parser.Parser P = new Parser.Parser("../../../../CompilerPascal.Test/Tests/ParserTests/Files/3.in");
+                //if (args.Contains("pars"))
+                //{
+                    //Parser.Parser P = new Parser.Parser(args[0]);
+                    Parser.Parser P = new Parser.Parser("../../../../CompilerPascal.Test/Tests/ParserTests/Files/1.in");
 
                     List<string> answer = new List<string>();
 
                     RunTree(P.doParse);
-                }
+                //}
             }
             catch
             {
@@ -65,6 +65,7 @@ namespace CompilerPascal
         }
 
         static List<string> answerList = new List<string>();
+        static List<bool> openBranch = new List<bool>();
 
         static string lineAnswer = null;
         static string lineBuf = null;
@@ -81,15 +82,24 @@ namespace CompilerPascal
                     if (numChildren == 0)
                     {
                         lineBuf += "├───";
+                        openBranch.Add(true);
                     }
                     else if (numChildren == 1)
                     {
                         lineBuf += "└───";
+                        openBranch[i] = false;
                     }
                 }
                 else
                 {
-                    lineBuf += "    ";
+                   if (openBranch[i])
+                   {
+                       lineBuf += "|   ";
+                   }
+                   else
+                   {
+                        lineBuf += "    ";
+                   }
                 }
             }
             lineAnswer = lineBuf + doParse.value;

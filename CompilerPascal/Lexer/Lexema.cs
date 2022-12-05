@@ -9,7 +9,7 @@ namespace CompilerPascal.Lexer
         public int numberLine;
         public int numberSymbol;
         public string categoryLexeme;
-        public string valueLexema;
+        public object valueLexema;
         public string initialLexema;
     }
 }

@@ -7,7 +7,7 @@ namespace CompilerPascal.Parser
     public class Node
     {
         public string category = "";
-        public string value = "";
+        public object value = null;
         public List<Node> children;
     }
 }

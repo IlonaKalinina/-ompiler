@@ -10,11 +10,27 @@ namespace CompilerPascal.Lexer
         {
             Lexer.first_symbol = Lexer.indicator + 1;
 
+            object newValueLexema = null;
+
+            switch (Lexer.category)
+            {
+                case ("integer"):
+                    newValueLexema = int.Parse(Lexer.meaning);
+                    break;
+                case ("real"):
+                    Lexer.meaning = Lexer.meaning.Replace(".", ",");
+                    newValueLexema = float.Parse(Lexer.meaning);
+                    break;
+                default:
+                    newValueLexema = Lexer.meaning;
+                    break;
+            }
+
             Lexer.foundlexem = new Lexema() { 
                 numberLine      = Lexer.line_number, 
                 numberSymbol    = Lexer.first_symbol, 
                 categoryLexeme  = Lexer.category, 
-                valueLexema     = Lexer.meaning, 
+                valueLexema     = newValueLexema, 
                 initialLexema   = Lexer.temp 
             };
 
