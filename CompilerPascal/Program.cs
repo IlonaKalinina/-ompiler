@@ -12,7 +12,7 @@ namespace CompilerPascal
         {
             try
             {
-                if (args.Contains("lex"))
+                if (args.Contains("-lex"))
                 {
                     var lexer = new Lexer.Lexer(args[0]);
                     //var lexer = new Lexer.Lexer("../../../../CompilerPascal.Test/Tests/LexerTests/Files/1_1.in");
@@ -48,7 +48,7 @@ namespace CompilerPascal
                         }
                     }
                 }
-                if (args.Contains("pars"))
+                if (args.Contains("-pars"))
                 {
                     Parser.Parser P = new Parser.Parser(args[0]);
                     //Parser.Parser P = new Parser.Parser("../../../../CompilerPascal.Test/Tests/ParserTests/Files/1.in");
