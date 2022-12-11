@@ -10,8 +10,9 @@ namespace CompilerPascal.Parser
 {
     class Parser
     {
-        Lexer.Lexema nowLexem;
         public Node doParse = new Node();
+
+        private Lexer.Lexema nowLexem;
         private readonly Lexer.Lexer lexer;
         private bool findError = false;
 
@@ -32,41 +33,123 @@ namespace CompilerPascal.Parser
             }
         }
 
-        public Node Expression(string input_data)
+        public void Programm(string input_data)
         {
-            Node leftСhild = Term(input_data);
-            if (leftСhild.category != "error")
+            if (nowLexem.valueLexema.ToString() == "programm")
             {
-                if (nowLexem.categoryLexeme != "End File")
+                //добавить программ в корень
+                //ищем следующую лексему, чтоб найти название программы
+                nowLexem = lexer.GetLexem(); //добавить проверку что не конец файла
+                if (nowLexem.categoryLexeme.ToString() == "identifier")
                 {
-                    while (nowLexem.valueLexema.ToString() == "+" || nowLexem.valueLexema.ToString() == "-")
+                    nowLexem = lexer.GetLexem();
+                    if (nowLexem.categoryLexeme == "separators" && nowLexem.valueLexema.ToString() == ";")
                     {
-                        var BinOp = nowLexem.valueLexema;
-                        if (nowLexem.categoryLexeme != "End File")
-                        {
-                            nowLexem = lexer.GetLexem();
-                        }
-                        Node rightСhild = Term(input_data);
-                        leftСhild = new Node()
-                        {
-                            category = "binOp",
-                            value = BinOp,
-                            children = new List<Node> { leftСhild, rightСhild }
-                        };
-                        if (rightСhild.category == "error")
-                        {
-                            return new Node()
-                            {
-                                category = "error",
-                                value = rightСhild.value
-                            };
-                        }
-
-                        if (nowLexem.categoryLexeme == "End File") break;
+                    }
+                    else
+                    {
+                        //ошибка, нет ;
+                    }
+                }
+                else
+                {
+                    //ошибка, не может не быть названия
+                }
+            }
+            //если нет программ, то нет ошибки, но нужно добавить в корень просто программ без названия, далее ищем описание программы var (ребенок)
+            Var(input_data);
+        }
+        public void Var(string input_data)
+        {
+            //ищем ключевое слово
+            nowLexem = lexer.GetLexem();
+            if (nowLexem.valueLexema.ToString() == "var")
+            {
+                //записываем куда то вар
+                //ищем идентификаторы
+                Id(input_data);
+            }
+            else
+            {
+                //ошибка
+            }
+        }
+        //a, b, c
+        public void Id(string input_data)
+        {
+            nowLexem = lexer.GetLexem();
+            while (nowLexem.valueLexema.ToString() != ":")
+            {
+                if (nowLexem.categoryLexeme.ToString() == "indetifier")
+                {
+                    //говорим что нашли одного ребенка вар, далее ищем либо еще одного, либо :
+                    nowLexem = lexer.GetLexem();
+                    if (nowLexem.valueLexema.ToString() == ",")
+                    {
+                        Id(input_data);
                     }
                 }
             }
-            return leftСhild;
+            //после нахождения : ищем тип данных
+        }
+
+        public void Type(string input_data)
+        {
+            nowLexem = lexer.GetLexem();
+            if (nowLexem.valueLexema.ToString() == "identifier" ||
+                nowLexem.valueLexema.ToString() == "string" ||
+                nowLexem.valueLexema.ToString() == "real" ||
+                nowLexem.valueLexema.ToString() == "keyword" ||
+                nowLexem.valueLexema.ToString() == "char" ||
+                nowLexem.valueLexema.ToString() == "integer")
+            {
+                //записываем тип данных
+                nowLexem = lexer.GetLexem();
+                if (nowLexem.categoryLexeme == "separators" && nowLexem.valueLexema.ToString() == ";")
+                {
+                }
+            }
+            else
+            {
+                //ошибка, не указан тип данных
+            }
+        }
+
+        public Node Expression(string input_data)
+        {
+        Node leftСhild = Term(input_data);
+        if (leftСhild.category != "error")
+        {
+            if (nowLexem.categoryLexeme != "End File")
+            {
+                while (nowLexem.valueLexema.ToString() == "+" || nowLexem.valueLexema.ToString() == "-")
+                {
+                    var BinOp = nowLexem.valueLexema;
+                    if (nowLexem.categoryLexeme != "End File")
+                    {
+                        nowLexem = lexer.GetLexem();
+                    }
+                    Node rightСhild = Term(input_data);
+                    leftСhild = new Node()
+                    {
+                        category = "binOp",
+                        value = BinOp,
+                        children = new List<Node> { leftСhild, rightСhild }
+                    };
+                    if (rightСhild.category == "error")
+                    {
+                        return new Node()
+                        {
+                            category = "error",
+                            value = rightСhild.value
+                        };
+                    }
+
+                    if (nowLexem.categoryLexeme == "End File") break;
+                }
+            }
+        }
+        return leftСhild;
         }
 
         public Node Term(string input_data)
