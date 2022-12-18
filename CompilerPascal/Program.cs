@@ -47,15 +47,15 @@ namespace CompilerPascal
                         }
                     }
                 }
-                //if (args.Contains("-pars"))
-                //{
-                    //Parser.Parser P = new Parser.Parser(args[0]);
-                    Parser.Parser P = new Parser.Parser(@"..\..\..\..\CompilerPascal.Test\Tests\ParserTest\Files\500.in");
+                if (args.Contains("-pars"))
+                {
+                    Parser.Parser P = new Parser.Parser(args[0]);
+                    //Parser.Parser P = new Parser.Parser(@"..\..\..\..\CompilerPascal.Test\Tests\ParserTests\Files\1.in");
 
                     List<string> answer = new List<string>();
 
                     RunTree(P.doParse);
-                //}
+                }
             }
             catch
             {
