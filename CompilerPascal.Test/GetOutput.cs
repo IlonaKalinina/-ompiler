@@ -9,7 +9,7 @@ namespace CompilerPascal.Test
         public static (string, string) RunAndGetOutputs(string path, string keys)
         {
             var inputPath = $"{path}.in";
-            var answerPath = $"{path}.ans";
+            var answerPath = $"{path}.out";
 
             var output = RunAndGetOutput(inputPath, keys);
             var rightAnswer = new StreamReader(answerPath).ReadToEnd();

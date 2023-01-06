@@ -1,0 +1,5 @@
+C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\obj\Debug\net6.0\Pascal-compiler.csproj.AssemblyReference.cache
+C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\obj\Debug\net6.0\Pascal-compiler.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\obj\Debug\net6.0\Pascal-compiler.AssemblyInfoInputs.cache
+C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\obj\Debug\net6.0\Pascal-compiler.AssemblyInfo.cs
+C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\obj\Debug\net6.0\Pascal-compiler.csproj.CoreCompileInputs.cache

@@ -4,78 +4,78 @@ using System.Text;
 
 namespace CompilerPascal.Lexer
 {
-    class CheckSymbol
+    public partial class Lexer
     {
-        public static void CheckFirstSymbol(string input_data)
+        public static void CheckSymbol(string input_data)
         {
-            if (Lexer.startComment)
+            if (startComment)
             {
-                CommentsFind.Comments(input_data);
+                Comments(input_data);
                 return;
             }
-            if (Lexer.startString)
+            if (startString)
             {
-                StringFindLex.String(input_data);
+                String(input_data);
                 return;
             }
             
-            while (input_data[Lexer.indicator] == ' ' || input_data[Lexer.indicator] == '\t')
+            while (input_data[flag] == ' ' || input_data[flag] == '\t')
             {
-                Lexer.indicator++;
-                if (Lexer.indicator == input_data.Length)
+                flag++;
+                if (flag == input_data.Length)
                 {
-                    Lexer.foundlexem = null;
+                    foundlexem = null;
                     return;
                 }
             }
-            if (Lexer.indicator < input_data.Length)
+            if (flag < input_data.Length)
             {
-                if (input_data[Lexer.indicator] >= '0' && input_data[Lexer.indicator] <= '9')
+                if (input_data[flag] >= '0' && input_data[flag] <= '9')
                 {
-                    IntegerFindLex.Integer(input_data);
+                    Integer(input_data);
                 }
-                else if (((input_data[Lexer.indicator] >= 'A') && (input_data[Lexer.indicator] <= 'Z')) || ((input_data[Lexer.indicator] >= 'a') && (input_data[Lexer.indicator] <= 'z')) || input_data[Lexer.indicator] == '_')
+                else if (((input_data[flag] >= 'A') && (input_data[flag] <= 'Z')) || ((input_data[flag] >= 'a') && (input_data[flag] <= 'z')) || input_data[flag] == '_')
                 {
-                    IdentifierFindLex.Identifier(input_data);
+                    Identifier(input_data);
                 }
-                else if (input_data[Lexer.indicator] == '%' || input_data[Lexer.indicator] == '&' || input_data[Lexer.indicator] == '$')
+                else if (input_data[flag] == '%' || input_data[flag] == '&' || input_data[flag] == '$')
                 {
-                    NumSistemsConv.Sistem(input_data);
+                    Sistem(input_data);
                 }
-                else if (input_data[Lexer.indicator] == '\'')
+                else if (input_data[flag] == '\'')
                 {
-                    StringFindLex.String(input_data);
+                    String(input_data);
                 }
-                else if (input_data[Lexer.indicator] == '/')
+                else if (input_data[flag] == '/')
                 {
-                    if (Lexer.indicator + 1 < input_data.Length)
+                    if (flag + 1 < input_data.Length)
                     {
-                        if (input_data[Lexer.indicator] == '/' && input_data[Lexer.indicator + 1] == '/')
+                        if (input_data[flag] == '/' && input_data[flag + 1] == '/')
                         {
-                            OneLineCommentsVoid.OneLineComments(input_data);
+                            OneLineComments(input_data);
                         }
                         else
                         {
-                            SymbolsFind.Symbols(input_data);
+                            Symbols(input_data);
                         }
                     }
                     else
                     {
-                        SymbolsFind.Symbols(input_data);
+                        Symbols(input_data);
                     }
                 }
-                else if (input_data[Lexer.indicator] == '{')
+                else if (input_data[flag] == '{')
                 {
-                    Lexer.startComment = true;
-                    CommentsFind.Comments(input_data);
+                    startComment = true;
+                    Comments(input_data);
                 }
-                else if (input_data[Lexer.indicator] == '#' && Lexer.indicator + 1 < input_data.Length && input_data[Lexer.indicator + 1] >= '0' && input_data[Lexer.indicator + 1] <= '9')
+                else if (input_data[flag] == '#' && flag + 1 < input_data.Length && input_data[flag + 1] >= '0' && input_data[flag + 1] <= '9')
                 {
-                    CharFindLex.Char(input_data);
+                    Char(input_data);
                 }
                 else
                 {
-                    SymbolsFind.Symbols(input_data);
+                    Symbols(input_data);
                 }
             }
         }

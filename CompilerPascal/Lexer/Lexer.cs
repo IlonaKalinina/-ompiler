@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace CompilerPascal.Lexer
 {
-    public class Lexer
+    public partial class Lexer
     {
         public static List<Lexema> lexems = new List<Lexema>();
 
         public static string input_data;
         public static string temp;
-        public static string category;
-        public static string meaning;
+        public static LexemaType type;
+        public static string value;
 
-        public static int first_symbol;
+        public static int symbol_number;
         public static int line_number;
-        public static int indicator;
-        public static int value;
+        public static int flag;
+        public static int valueInt;
 
         public static bool startComment;
         public static bool startString;
@@ -28,7 +28,7 @@ namespace CompilerPascal.Lexer
 
         public readonly StreamReader readFile;
 
-        public static Lexema foundlexem = new Lexema();
+        public static Lexema foundlexem = new Lexema(line_number, symbol_number, type, value, input_data);
 
         public Lexer(string fileName)
         {
@@ -37,14 +37,14 @@ namespace CompilerPascal.Lexer
 
             foundlexem = null;
             temp       = null;
-            category   = null;
-            meaning    = null;
+            type       = LexemaType.NONE;
+            value      = null;
 
-            first_symbol = 1;
+            symbol_number = 1;
             line_number  = 1;
 
-            indicator = 0;
-            value     = 0;
+            flag = 0;
+            valueInt     = 0;
 
             startComment        = false;
             startString         = false;
@@ -57,11 +57,11 @@ namespace CompilerPascal.Lexer
         public Lexema GetLexem()
         {
             CommentOrStringNotEnd:
-            if (input_data != null && indicator + 1 > input_data.Length)
+            if (input_data != null && flag + 1 > input_data.Length)
             {
                 input_data = readFile.ReadLine();
-                indicator = 0;
-                first_symbol = 1;
+                flag = 0;
+                symbol_number = 1;
                 line_number++;
 
                 while (input_data == "")
@@ -73,22 +73,25 @@ namespace CompilerPascal.Lexer
                 {
                     if (startComment || startString)
                     {
-                        if (startComment) ExepError.Error(7);
-                        if (startString)  ExepError.Error(3);
+                        if (startComment) 
+                            Error($"({line_number}, {symbol_number}) Unexpected end of file");
+                        if (startString)  
+                            Error($"({line_number}, {symbol_number}) String exceeds line");
+
                         startComment = false;
                         return foundlexem;
                     }
-                    category = "End File";
-                    ResultOut.Result();
+                    type = LexemaType.EOF;
+                    Result();
                     return foundlexem;
                 }
             }else if (input_data == null)
             {
-                category = "End File";
-                ResultOut.Result();
+                type = LexemaType.EOF;
+                Result();
                 return foundlexem;
             }
-            CheckSymbol.CheckFirstSymbol(input_data);
+            CheckSymbol(input_data);
 
             if (startComment || startString)
             {
@@ -100,8 +103,8 @@ namespace CompilerPascal.Lexer
 
             if (foundlexem == null)
             {
-                category = "End File";
-                ResultOut.Result();
+                type = LexemaType.EOF;
+                Result();
                 return foundlexem;
             }
             return foundlexem;

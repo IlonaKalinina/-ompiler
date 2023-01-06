@@ -1,6 +1,0 @@
-5 1 integer 123 123
-5 5 operators / /
-5 7 integer 23 23
-5 11 operators + +
-5 12 separators ; ;
-End File

@@ -14,47 +14,44 @@ namespace CompilerPascal
             {
                 if (args.Contains("-lex"))
                 {
-                    var lexer = new Lexer.Lexer(args[0]);
+                //"../../../../CompilerPascal.Test/Tests/LexerTests/Files/1_1.in"
+                var lexer = new Lexer.Lexer(args[0]);
+                //var lexer = new Lexer.Lexer("../../../../CompilerPascal.Test/Tests/LexerTests/Files/03_2.in");
 
-                    eof = false;
+                eof = false;
                     while (!eof)
                     {
-                        var token = lexer.GetLexem();
+                        var lexema = lexer.GetLexem();
 
-                        if (token != null)
+                        if (lexema != null)
                         {
-                            if (token.categoryLexeme != "error" && token.categoryLexeme != "comments")
+                            if (lexema.Type != Lexer.LexemaType.ERROR && lexema.Type != Lexer.LexemaType.NONE)
                             {
-                                if (token.categoryLexeme == "End File")
+                                if (lexema.Type == Lexer.LexemaType.EOF)
                                 {
-                                    Console.Write($"{token.categoryLexeme}");
                                     eof = true;
                                 }
                                 else
                                 {
-                                    Console.WriteLine($"{token.numberLine} {token.numberSymbol} {token.categoryLexeme} {token.valueLexema} {token.initialLexema}");
+                                    Console.WriteLine($"{lexema.Line_number} {lexema.Symbol_number} {lexema.Type} {lexema.Value} {lexema.Source}");
                                 }
                             }
-                            else if (token.categoryLexeme == "error")
+                            else if (lexema.Type == Lexer.LexemaType.ERROR)
                             {
-                                Console.WriteLine($"{token.valueLexema}");
+                                Console.WriteLine($"{lexema.Value}");
                             }
                         }
-                        else if (token != null && token.categoryLexeme == "End File")
+                        else if (lexema != null && lexema.Type == Lexer.LexemaType.EOF)
                         {
-                            Console.Write($"{token.categoryLexeme}");
                             eof = true;
                         }
                     }
                 }
                 if (args.Contains("-pars"))
                 {
-                    Parser.Parser P = new Parser.Parser(args[0]);
-                    //Parser.Parser P = new Parser.Parser(@"..\..\..\..\CompilerPascal.Test\Tests\ParserTests\Files\1.in");
-
+                   // Parser.Parser P = new Parser.Parser(args[0]);
                     List<string> answer = new List<string>();
-
-                    RunTree(P.doParse);
+                    //RunTree(P.doParse);
                 }
             }
             catch

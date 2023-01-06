@@ -4,21 +4,21 @@ using System.Text;
 
 namespace CompilerPascal.Lexer
 {
-    class NumSistemsConv
+    public partial class Lexer
     {
         public static void Sistem(string input_data)
         {
             long answer = 0; char top = '9'; int up = 10;
             input_data = input_data.ToUpper();
 
-            Lexer.category = "integer";
-            for (int i = Lexer.indicator; i < input_data.Length; i++)
+            type = LexemaType.INT;
+            for (int i = flag; i < input_data.Length; i++)
             {
                 if (input_data[i] == '%' || input_data[i] == '&' || input_data[i] == '$')
                 {
                     if (i + 1 == input_data.Length)
                     {
-                        SymbolsFind.Symbols(input_data);
+                        Symbols(input_data);
                         return;
                     }
                     else
@@ -38,7 +38,7 @@ namespace CompilerPascal.Lexer
                             top = 'F';
                             up = 16;
                         }
-                        Lexer.temp += input_data[i];
+                        temp += input_data[i];
                         i++;
                     }
                 }
@@ -51,8 +51,8 @@ namespace CompilerPascal.Lexer
                 int border = top - '0';
                 if (comp > border)
                 {
-                    Lexer.error = true;
-                    Lexer.temp += input_data[i];
+                    error = true;
+                    temp += input_data[i];
                 }
                 else if (((input_data[i] >= '0') && (input_data[i] <= '9')) || ((input_data[i] >= 'A') && (input_data[i] <= 'F')))
                 {
@@ -60,24 +60,24 @@ namespace CompilerPascal.Lexer
                     {
                         comp = input_data[i] - 'A' + 10;
                     }
-                    Lexer.temp += input_data[i];
+                    temp += input_data[i];
                     answer = (answer * up) + comp;
-                    Lexer.meaning = answer.ToString();
+                    value = answer.ToString();
                 }
             }
             ResultOut:
-            Lexer.meaning = answer.ToString();
+            value = answer.ToString();
             if (answer > 2147483647)
             {
-                ExepError.Error(2);
+                Error($"({line_number}, {symbol_number}) Range check error while evaluating constants");
                 return;
             }
-            if (Lexer.error)
+            if (error)
             {
-                ExepError.Error(1);
+                Error($"({line_number}, {symbol_number}) Invalid format");
                 return;
             }
-            ResultOut.Result();
+            Result();
             return;
         }
     }

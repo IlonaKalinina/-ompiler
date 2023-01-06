@@ -10,4 +10,19 @@ namespace CompilerPascal.Parser
         public object value = null;
         public List<Node> children;
     }
+
+    public enum NodeType
+    {
+        REAL,
+        INT,
+        CHAR,
+        STRING,
+        IDENTIFIER,
+        KEYWORD,
+        OPERATOR,
+        EOF,
+        ERROR,
+        SEPARATOR,
+        NONE
+    }
 }
