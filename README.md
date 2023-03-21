@@ -10,7 +10,8 @@ After downloading the source, open CompilerP.sln в Visual Studio.
 - Simple expression parser
 - Syntax analyzer
 - Semantic analysis
-# Kalinina Ilona
-# FEFU
-# Б9120-09.03.03пикд
-# 2022
+# Author 
+- Kalinina Ilona
+- FEFU
+- Б9120-09.03.03пикд
+- 2022
