@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CompilerPascal.Lexer
+namespace CompilerPascal
 {
     public partial class Lexer
     {
@@ -46,6 +46,17 @@ namespace CompilerPascal.Lexer
                     if (input_data[i] == c)
                     {
                         type = LexemaType.SEPARATOR;
+                        if (c == 46)
+                        {
+                            if (i + 1 < input_data.Length && input_data[i + 1] == '.')
+                            {
+                                temp += input_data[i];
+                                temp += input_data[i + 1];
+                                value = temp;
+                                Result();
+                                return;
+                            }
+                        }
                         temp = input_data[i].ToString();
                         value = temp;
                         Result();

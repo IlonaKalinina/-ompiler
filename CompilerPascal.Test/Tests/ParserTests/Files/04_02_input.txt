@@ -1,0 +1,14 @@
+program CheckScalarTypes;
+type
+rec = record
+	n : record
+		b : record
+			c : integer;
+		end;
+	end;
+end;
+var
+a : rec;
+begin
+a.n.b.c := 5;
+end.

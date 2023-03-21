@@ -10,24 +10,39 @@ namespace CompilerPascal
         public static bool eof = false;
         static void Main(string[] args)
         {
+            if (args.Length == 0)
+            {
+                Console.WriteLine("Options:");
+                Console.WriteLine("  -help    Display help");
+                return;
+            }
+            if (args.Contains("-help"))
+            {
+                Console.WriteLine("Use the command:");
+                Console.WriteLine("  dotnet run ..\\CompilerPascal.Test\\Tests\\LexerTests\\Files\\{file name} -key");
+                Console.WriteLine("Key:");
+                Console.WriteLine("  -l     Lexical parser");
+                Console.WriteLine("  -sp    Simple expression parser");
+                Console.WriteLine("  -p     Syntax analyzer)");
+                Console.WriteLine("  -sa    Semantic analysis");
+                return;
+            }
+            //string filePath = "../../../../CompilerPascal.Test/Tests/ParserTests/Files/01_02_input.txt";
             try
             {
-                if (args.Contains("-lex"))
-                {
-                //"../../../../CompilerPascal.Test/Tests/LexerTests/Files/1_1.in"
-                var lexer = new Lexer.Lexer(args[0]);
-                //var lexer = new Lexer.Lexer("../../../../CompilerPascal.Test/Tests/LexerTests/Files/03_2.in");
+                Lexer lexer = new Lexer(args[0]);
 
-                eof = false;
+                if (args[1] == "-l")
+                {
                     while (!eof)
                     {
                         var lexema = lexer.GetLexem();
 
                         if (lexema != null)
                         {
-                            if (lexema.Type != Lexer.LexemaType.ERROR && lexema.Type != Lexer.LexemaType.NONE)
+                            if (lexema.Type != LexemaType.ERROR && lexema.Type != LexemaType.NONE)
                             {
-                                if (lexema.Type == Lexer.LexemaType.EOF)
+                                if (lexema.Type == LexemaType.EOF)
                                 {
                                     eof = true;
                                 }
@@ -36,90 +51,45 @@ namespace CompilerPascal
                                     Console.WriteLine($"{lexema.Line_number} {lexema.Symbol_number} {lexema.Type} {lexema.Value} {lexema.Source}");
                                 }
                             }
-                            else if (lexema.Type == Lexer.LexemaType.ERROR)
+                            else if (lexema.Type == LexemaType.ERROR)
                             {
                                 Console.WriteLine($"{lexema.Value}");
                             }
                         }
-                        else if (lexema != null && lexema.Type == Lexer.LexemaType.EOF)
+                        else if (lexema != null && lexema.Type == LexemaType.EOF)
                         {
                             eof = true;
                         }
                     }
                 }
-                if (args.Contains("-pars"))
+                if (args[1] == "-sp")
                 {
-                   // Parser.Parser P = new Parser.Parser(args[0]);
-                    List<string> answer = new List<string>();
-                    //RunTree(P.doParse);
                 }
-            }
-            catch
-            {
-                Console.WriteLine("File not found");
-            }
-        }
-
-        static List<string> answerList = new List<string>();
-        static List<bool> openBranch = new List<bool>();
-
-        static string lineAnswer = null;
-        static string lineBuf = null;
-
-        static int numNode = 0;
-        static int numChildren = -1;
-        static void RunTree(Parser.Node doParse)
-        {
-            lineBuf = null;
-            for (int i = 0; i < numNode; i++)
-            {
-                if (i == numNode - 1)
+                if (args[1] == "-par")
                 {
-                    if (numChildren == 0)
+                    try
                     {
-                        lineBuf += "├───";
-                        openBranch.Add(true);
+                        Parser parser = new Parser(lexer);
+                        Node firstNode = parser.ParseMainProgram();
+                        Console.WriteLine(firstNode.ToString(null));
                     }
-                    else if (numChildren == 1)
+                    catch (Except ex)
                     {
-                        lineBuf += "└───";
-                        openBranch[i] = false;
+                        throw ex;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Except(lexer.GetLexem().Line_number, lexer.GetLexem().Symbol_number - 1, ex.Message);
                     }
                 }
-                else
+                if (args[1] == "-sa")
                 {
-                   if (openBranch[i])
-                   {
-                       lineBuf += "│   ";
-                   }
-                   else
-                   {
-                        lineBuf += "    ";
-                   }
                 }
             }
-            lineAnswer = lineBuf + doParse.value;
-            Console.WriteLine(lineAnswer);
-            answerList.Add(lineAnswer);
-
-            if (doParse.children != null)
+            catch (Except e)
             {
-                numNode++;
-                numChildren = 0;
-
-                RunTree(doParse.children[0]);
-                numChildren = -1;
-
-                if (doParse.children.Count > 1)
-                {
-                    numChildren = 1;
-
-                    RunTree(doParse.children[1]);
-                    numChildren = -1;
-                }
-                numNode--;
+                Console.Write($"{e}\r\n");
             }
-            return;
         }
     }
 }

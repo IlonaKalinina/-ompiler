@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CompilerPascal.Lexer
+namespace CompilerPascal
 {
     public partial class Lexer
     {
@@ -25,12 +25,6 @@ namespace CompilerPascal.Lexer
 
                 if ((input_data[i] >= '0' && input_data[i] <= '9') || (input_data[i] == '.'))
                 {
-                    if (temp == null && input_data[i] == '0')
-                    {
-                        temp += input_data[i];
-                        continue;
-                    } 
-
                     temp += input_data[i];
                     value += input_data[i];
 
@@ -42,7 +36,6 @@ namespace CompilerPascal.Lexer
                 }
                 else
                 {
-                    value = temp;
                     CheckRange();
                     return;
                 }

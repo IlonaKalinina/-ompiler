@@ -1,0 +1,66 @@
+	[] - optional constructs 			//необязательные конструкции
+	{} - zero or more repetitions of constructs	//ноль или более повторений конструкций
+	() - grouping of constructs			//группировка конструкций
+	|  - chose of one from many			//одно из многих
+	"" - literal text in definitions 		//буквальный текст в определениях
+
+	//PrOGRAMM
+program ::= [ program_name ] {declarations} block "."
+	program_name ::= "porgam" id ";"
+
+
+	//DECLARATIONS
+<declarations> ::= <const_declaration> | <var_declaration> | <type_declaration> | <procedure_declaration>
+
+var_declaration ::= "var" one_var_declaration {one_var_declaration}
+	one_var_declaration ::= id {"," id} ":" type ";" | id ":" type "=" exp ";"
+
+const_declaration ::= "const" one_const_declaration {one_const_declaration}
+	one_const_declaration ::= id "=" exp ";"
+
+type_declaration ::= "type" one_type_declaration {one_type_declaration}
+	one_type_declaration ::= id "=" type
+
+procedure_declaration ::= "procedure" identifier [procedure_parameters] ";" {var_declaration | const_declaration | type_declaration} block ";"
+	procedure_parameters ::= "(" ["var"|"out"] one_var_declaration {";" ["var"|"out"] one_var_declaration} ")"
+
+
+	//BLOCK
+block ::= "begin" [(statement) {";" (statement)}] "end"
+
+
+	//STATEMENT
+statement ::= simpleStmt | structStmt
+
+simpleStmt ::= assignment | call_procedure | "exit"
+	assignment ::= (id | record_element | array_element) (":=" | "+=" | "-=" | "*=" | "/=") (expression | string)
+		array_element ::= id "[" simple_expression "]"
+		record_element ::= id "." id
+	call_procedure ::= id "(" [factor { "," factor }] ")"
+
+structStmt ::=  if | for | while | repeat | block
+	if ::= "if" expression "then" statemщасent ["else" statement]
+	for ::= "for" contrlVar ":=" initialVal "to" finalVal "do" statement
+	while ::= "while" expression "do" statement
+	repeat ::= "repeat" {statement ";"} "until" expression
+	block ::= "begin" [(statement) {";" (statement)}] "end"
+
+
+	//EXPRESSIONS
+expression ::= simple_expression ("<" | "<=" | ">" | ">=" | "=" | "<>") simple_expression
+	simple_expression ::= ["+" | "-"] term { ("or" | "+" | "-") term }
+
+term ::= factor { ( "and" | "/" | "*" ) factor }
+
+factor ::= number | string | real | call |  variable | "(" expression ")"| id "." id
+	variable ::= id ["[" expression {"," expression} "]"]
+
+
+	//TYPE
+type ::= primitive_type | array_type | record_type
+
+	primitive_type ::= "integer" | "real" | "string" 
+	array_type ::= "array" "[" (ordinal_type) { "," (ordinal_type) } "]" "of" primitive_type
+		ordinal_type ::= simple_expression ".." simple_expression
+	record_type ::= "record" {var_declarations} "end"
+	

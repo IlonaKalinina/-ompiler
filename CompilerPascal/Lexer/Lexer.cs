@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CompilerPascal.Lexer
+namespace CompilerPascal
 {
     public partial class Lexer
     {

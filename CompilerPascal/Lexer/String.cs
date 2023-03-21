@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CompilerPascal.Lexer
+namespace CompilerPascal
 {
     public partial class Lexer
     {

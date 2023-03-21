@@ -1,161 +1,91 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace CompilerPascal.Parser
+namespace CompilerPascal
 {
-    class Parser
+    public partial class Parser
     {
-        public Node doParse = new Node();
+        Lexer lexer;
+        Lexema currentLex;
+        SymTableStack symTableStack;
 
-        private Lexer.Lexema nowLexem;
-        private readonly Lexer.Lexer lexer;
-        private bool findError = false;
-
-        public Parser(string fileName)
+        public Parser(Lexer lexer)
         {
-            lexer = new Lexer.Lexer(fileName);
-            nowLexem = lexer.GetLexem();
+            this.lexer = lexer;
+            symTableStack = new SymTableStack();
+            Dictionary<string, Symbol> builtins = new Dictionary<string, Symbol>();
+            builtins.Add("integer", new SymInteger("integer"));
+            builtins.Add("real", new SymReal("real"));
+            builtins.Add("string", new SymString("string"));
+            builtins.Add("write", new SymProc("write"));
+            builtins.Add("read", new SymProc("read"));
+            symTableStack.AddTable(new SymTable(builtins));
+            symTableStack.AddTable(new SymTable(new Dictionary<string, Symbol>()));
 
-            doParse = Expression(nowLexem.Value);
-
-            if (nowLexem.Type == Lexer.LexemaType.EOF && !findError)
-            {
-                doParse = new Node()
-                {
-                    category = "error",
-                    value = $"({nowLexem.Line_number}, {nowLexem.Symbol_number}) Syntax error, missing binary operation"
-                };
-            }
+            currentLex = lexer.GetLexem();
         }
 
-        public Node Expression(object input_data)
+        private bool Expect(params object[] requires)
         {
-            Node leftСhild = Term(input_data);
-            if (leftСhild.category != "error")
+            foreach (object require in requires)
             {
-                while (nowLexem.Type == Lexer.LexemaType.OPERATOR && nowLexem.Source == "+" || nowLexem.Source == "-")
+                if (Equals(currentLex.Value, require))
                 {
-                    leftСhild = AddChilde(leftСhild, input_data);
-                    if (nowLexem.type == "End File") break;
+                    return true;
                 }
             }
-            return leftСhild;
+            return false;
         }
-
-        public Node Term(object input_data)
+        private void Require(object require)
         {
-            Node leftСhild = Factor(input_data);
-            if (leftСhild.category != "error")
+            if (!Expect(require))
             {
-                if (nowLexem.type != "End File")
+                throw new Except(currentLex.Line_number, currentLex.Symbol_number, $"expected '{currentLex.Source}'");
+            }
+            currentLex = lexer.GetLexem();
+        }
+        private bool ExpectType(params LexemaType[] types)
+        {
+            foreach (LexemaType type in types)
+            {
+                if (currentLex.Type == type)
                 {
-                    while (nowLexem.value.ToString() == "*" || nowLexem.value.ToString() == "/")
-                    {
-                        leftСhild = AddChilde(leftСhild, input_data);
-                        if (nowLexem.type == "End File") break;
-                    }
+                    return true;
                 }
             }
-            return leftСhild;
+            return false;
+        }
+        private void RequireType(LexemaType type)
+        {
+            if (!ExpectType(type))
+            {
+                throw new Except(currentLex.Line_number, currentLex.Symbol_number, $"expected {type}");
+            }
+        }
+        private void NotRequireType(LexemaType type)
+        {
+            if (ExpectType(type))
+            {
+                throw new Except(currentLex.Line_number, currentLex.Symbol_number, $"expected {type}");
+            }
         }
 
-        public Node Factor(object input_data)
+        public Node ParseMainProgram()
         {
-            if (nowLexem.type == "integer" || nowLexem.type == "real")
+            string name = "";
+            List<NodeDescriptions> types;
+            BlockStmt body;
+
+            if (Expect(KeyWord.PROGRAM))
             {
-                Node nowChilde = new Node()
-                {
-                    category = "number",
-                    value = nowLexem.value
-                };
-                if (nowLexem.type != "End File") nowLexem = lexer.GetLexem();
-                return nowChilde;
+                currentLex = lexer.GetLexem();
+                name = ParseProgramName();
             }
 
-            if (nowLexem.type == "identifier")
-            {
-                Node nowChilde = new Node()
-                {
-                    category = "identifier",
-                    value = nowLexem.value
-                };
-                if (nowLexem.type != "End File") nowLexem = lexer.GetLexem();
-                return nowChilde;
-            }
-
-            if (nowLexem.value.ToString() == "(")
-            {
-                nowLexem = lexer.GetLexem();
-                Node nextExpression = Expression(input_data);
-
-                if (nowLexem.type == "End File")
-                {
-                    findError = true;
-                    Node nowChilde = new Node()
-                    {
-                        category = "error",
-                        value = $"No right bracket on line {nowLexem.line - 1}"
-                    };
-                    return nowChilde;
-                }
-                else
-                {
-                    nowLexem = lexer.GetLexem();
-                    return nextExpression;
-                }
-            }
-            return Exep();
-        }
-
-        public Node AddChilde(Node leftСhild, string input_data)
-        {
-            var BinOp = nowLexem.value;
-            if (nowLexem.type != "End File")
-            {
-                nowLexem = lexer.GetLexem();
-            }
-            leftСhild = new Node()
-            {
-                category = "binOp",
-                value = BinOp,
-                children = new List<Node> { leftСhild, Term(input_data) }
-            };
-            if (leftСhild.children[1].category == "error")
-            {
-                return new Node()
-                {
-                    category = "error",
-                    value = leftСhild.children[1].value
-                };
-            }
-            return leftСhild;
-        }
-
-        public Node Exep()
-        {
-            if (nowLexem.value != null)
-            {
-                findError = true;
-                return new Node()
-                {
-                    category = "error",
-                    value = $"Syntax error on line {nowLexem.line}, don't have factor"
-                };
-            }
-            else
-            {
-                findError = true;
-                return new Node()
-                {
-                    category = "error",
-                    value = $"Syntax error on line {nowLexem.line - 1}, don't have factor"
-                };
-            }
+            types = ParseDescription();
+            Require(KeyWord.BEGIN);
+            body = ParseBlock();
+            Require(Separator.Dot);
+            return new NodeMainProgram(name, types, body);
         }
     }
 }
