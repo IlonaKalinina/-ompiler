@@ -8,9 +8,10 @@ namespace CompilerPascal
     class Program
     {
         public static bool eof = false;
+        public static string filePath = "../../../../CompilerPascal.Test/Tests/ParserTests/Files/04_01.in";
         static void Main(string[] args)
         {
-            if (args.Length == 0)
+            /*if (args.Length == 0)
             {
                 Console.WriteLine("Options:");
                 Console.WriteLine("  -help    Display help");
@@ -26,13 +27,13 @@ namespace CompilerPascal
                 Console.WriteLine("  -p     Syntax analyzer)");
                 Console.WriteLine("  -sa    Semantic analysis");
                 return;
-            }
-            //string filePath = "../../../../CompilerPascal.Test/Tests/ParserTests/Files/01_02_input.txt";
+            }*/
             try
             {
-                Lexer lexer = new Lexer(args[0]);
-
-                if (args[1] == "-l")
+                //Lexer lexer = new Lexer(args[0]);
+                Lexer lexer = new Lexer(filePath);
+                /*
+                if (args[1] == "-lex")
                 {
                     while (!eof)
                     {
@@ -64,8 +65,13 @@ namespace CompilerPascal
                 }
                 if (args[1] == "-sp")
                 {
+                    SimpleParser sParser = new SimpleParser(lexer);
+                    SimpleNode firstNode = sParser.Expression();
+                    SimpleParser.RunTree(firstNode);
                 }
-                if (args[1] == "-par")
+                */
+                //if (args[1] == "-pars")
+                if (true)
                 {
                     try
                     {
@@ -82,9 +88,9 @@ namespace CompilerPascal
                         throw new Except(lexer.GetLexem().Line_number, lexer.GetLexem().Symbol_number - 1, ex.Message);
                     }
                 }
-                if (args[1] == "-sa")
+                /*if (args[1] == "-sa")
                 {
-                }
+                }*/
             }
             catch (Except e)
             {

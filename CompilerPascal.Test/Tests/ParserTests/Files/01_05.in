@@ -1,0 +1,11 @@
+program Test_01_05;
+type
+a = integer;
+var
+d : a = 7;
+type
+e = string;
+var
+f : e = "hello";
+begin
+end.

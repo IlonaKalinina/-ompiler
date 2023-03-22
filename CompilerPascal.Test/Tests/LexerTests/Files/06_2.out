@@ -1,2 +1,2 @@
 1 1 INT 2147483647 %1111111111111111111111111111111
-(2, 1) Range check error while evaluating constants
+(2,1) ERROR: Range check error while evaluating constants

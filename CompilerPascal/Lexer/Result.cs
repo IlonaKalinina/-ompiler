@@ -48,6 +48,8 @@ namespace CompilerPascal
                     return Operator.MultiplyEquality;
                 case "/=":
                     return Operator.DivideEquality;
+                case ".":
+                    return Operator.DotRecord;
                 default:
                     return Operator.Unidentified;
             }
@@ -120,6 +122,8 @@ namespace CompilerPascal
                     return "*=";
                 case Operator.DivideEquality:
                     return "/=";
+                case Operator.DotRecord:
+                    return ".";
                 default:
                     return "";
             }

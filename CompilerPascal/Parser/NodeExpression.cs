@@ -29,7 +29,7 @@ namespace CompilerPascal
         public override string ToString(string indent)
         {
             string result = null;
-            result += cast + "\n\r";
+            result += cast + "\r\n";
             result += indent + $"└─── {exp.ToString(indent + "     ")}";
             return result;
         }
@@ -50,7 +50,9 @@ namespace CompilerPascal
         {
             SymbolType leftType = left.GetCachedType();
             SymbolType rightType = right.GetCachedType();
-            if (leftType.GetType() != rightType.GetType())
+            Operator op = (Operator)opname;
+
+            if (leftType.GetType() != rightType.GetType() && op != Operator.DotRecord)
             {
                 if ((leftType.GetType() == typeof(SymInteger) || leftType.GetType() == typeof(SymReal)) &&
                    (rightType.GetType() == typeof(SymInteger) || rightType.GetType() == typeof(SymReal)))
@@ -72,9 +74,8 @@ namespace CompilerPascal
             }
             if (opname.GetType() == typeof(Operator))
             {
-                Operator op = (Operator)opname;
                 if (op == Operator.Equal || op == Operator.Less || op == Operator.LessOrEqual ||
-                   op == Operator.Greater || op == Operator.GreaterOrEqual || op == Operator.NotEqual)
+                    op == Operator.Greater || op == Operator.GreaterOrEqual || op == Operator.NotEqual)
                 {
                     return new SymBoolean("boolean");
                 }
@@ -163,7 +164,7 @@ namespace CompilerPascal
         public override string ToString(string indent)
         {
             string result = null;
-            result += $"{name}\n\r";
+            result += $"{name}\r\n";
 
             if (args != null)
             {
@@ -175,7 +176,7 @@ namespace CompilerPascal
                     }
                     else
                     {
-                        result += indent + $"├─── {arg.ToString(indent + "     ")}\n\r";
+                        result += indent + $"├─── {arg.ToString(indent + "     ")}\r\n";
                     }
                 }
             }

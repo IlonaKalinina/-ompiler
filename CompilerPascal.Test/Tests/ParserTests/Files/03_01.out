@@ -1,0 +1,10 @@
+program CheckIf
+│    
+begin
+├─── if
+│    ├─── >
+│    │    ├─── 6
+│    │    └─── 5
+│    └─── write
+│         └─── yes
+└─── end

@@ -52,8 +52,7 @@ namespace CompilerPascal
             }
             else
             {
-                Error($"({line_number}, {symbol_number}) Range check error while evaluating constants");
-                return;
+                throw new Except(line_number, symbol_number, "Range check error while evaluating constants");
             }
         }
     }

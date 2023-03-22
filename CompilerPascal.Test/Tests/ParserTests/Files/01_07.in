@@ -1,0 +1,6 @@
+program Test_01_07;
+var
+a, b : integer = 5;
+begin
+;
+end.

@@ -98,7 +98,7 @@ namespace CompilerPascal
             return new TypeTypesNode(body);
         }
 
-        public VarDeclarationNode ParseVariableDescription(KeyWord? param = null, VarType varType = VarType.Global)
+        public VarDeclarationNode ParseVariableDescription(KeyWord? param = null)
         {
             List<string>    names = new List<string>();
             List<SymbolVar> vars  = new List<SymbolVar>();
@@ -141,37 +141,7 @@ namespace CompilerPascal
             foreach (string name in names)
             {
                 SymbolVar var = new SymbolVar(name, type);
-                switch (varType)
-                {
-                    case VarType.Global:
-                        var = new SymVarGlobal(var);
-                        symTableStack.Add(name, var);
-                        break;
-                    case VarType.Local:
-                        var = new SymVarLocal(var);
-                        symTableStack.Add(name, var);
-                        break;
-                    case VarType.Param:
-                        switch (param)
-                        {
-                            case KeyWord.VAR:
-                                var = new SymVarParamVar(var);
-                                symTableStack.Add(name, var);
-                                break;
-                            case KeyWord.OUT:
-                                var = new SymVarParamOut(var);
-                                symTableStack.Add(name, var);
-                                break;
-                            default:
-                                var = new SymVarParam(var);
-                                symTableStack.Add(name, var);
-                                break;
-                        }
-                        break;
-                    default:
-                        symTableStack.Add(name, var);
-                        break;
-                }
+                symTableStack.Add(name, var);
                 vars.Add(var);
             }
             return new VarDeclarationNode(vars, type, value);

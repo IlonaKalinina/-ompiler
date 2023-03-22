@@ -38,12 +38,12 @@ namespace CompilerPascal
         {
             string result = null;
             indent = "│    ";
-            result += $"program {name}\n\r";
+            result += $"program {name}\r\n";
             foreach (NodeDescriptions type in types)
             {
-                result += $"├───{type.ToString(indent)}\n\r";
+                result += $"├───{type.ToString(indent)}\r\n";
             }
-            result += indent + "\n\r";
+            result += indent + "\r\n";
             result += body.ToString(indent);
             return result;
         }
@@ -63,10 +63,10 @@ namespace CompilerPascal
         {
             string result = null;
             indent = Indent(true);
-            result += $"program\n\r";
+            result += $"program\r\n";
             foreach (NodeDescriptions type in types)
             {
-                result += $"├───{type.ToString(indent)}\n\r";
+                result += $"├───{type.ToString(indent)}\r\n";
             }
             result += body.ToString(indent);
             return result;

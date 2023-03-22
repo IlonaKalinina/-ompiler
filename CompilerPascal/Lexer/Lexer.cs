@@ -74,9 +74,9 @@ namespace CompilerPascal
                     if (startComment || startString)
                     {
                         if (startComment) 
-                            Error($"({line_number}, {symbol_number}) Unexpected end of file");
-                        if (startString)  
-                            Error($"({line_number}, {symbol_number}) String exceeds line");
+                            throw new Except(line_number, symbol_number, "Unexpected end of file");
+                        if (startString)
+                            throw new Except(line_number, symbol_number, "String exceeds line");
 
                         startComment = false;
                         return foundlexem;

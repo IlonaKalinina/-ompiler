@@ -64,8 +64,7 @@ namespace CompilerPascal
 
                         if (doteCount > 1 || eCount > 1)
                         {
-                            Error($"({line_number}, {symbol_number}) Syntax error");
-                            return;
+                            throw new Except(line_number, symbol_number, "Syntax error");
                         }
                         Result();
                         return;
@@ -103,8 +102,7 @@ namespace CompilerPascal
 
                     if (doteCount > 1 || eCount > 1)
                     {
-                        Error($"({line_number}, {symbol_number}) Syntax error");
-                        return;
+                        throw new Except(line_number, symbol_number, "Syntax error");
                     }
                     Result();
                     return;

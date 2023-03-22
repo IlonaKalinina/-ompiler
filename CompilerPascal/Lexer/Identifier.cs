@@ -19,8 +19,8 @@ namespace CompilerPascal
                         value = temp;
                         if (temp.Length > 127)
                         {
-                            Error($"({line_number}, {symbol_number}) Identifier exceeds length");
-                            return;
+                            throw new Except(line_number, symbol_number, "Identifier exceeds length");
+                            
                         }
                         KeyWord();
                         Result();

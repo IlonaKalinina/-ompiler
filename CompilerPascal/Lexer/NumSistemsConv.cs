@@ -69,13 +69,11 @@ namespace CompilerPascal
             value = answer.ToString();
             if (answer > 2147483647)
             {
-                Error($"({line_number}, {symbol_number}) Range check error while evaluating constants");
-                return;
+                throw new Except(line_number, symbol_number, "Range check error while evaluating constants");
             }
             if (error)
             {
-                Error($"({line_number}, {symbol_number}) Invalid format");
-                return;
+                throw new Except(line_number, symbol_number, "Invalid format");
             }
             Result();
             return;

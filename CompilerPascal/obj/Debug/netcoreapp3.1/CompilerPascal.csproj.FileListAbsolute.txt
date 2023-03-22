@@ -46,7 +46,6 @@ C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\CompilerPascal\b
 C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\CompilerPascal\bin\Debug\netcoreapp3.1\CompilerPascal.runtimeconfig.dev.json
 C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\CompilerPascal\bin\Debug\netcoreapp3.1\CompilerPascal.dll
 C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\CompilerPascal\bin\Debug\netcoreapp3.1\CompilerPascal.pdb
-C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\CompilerPascal\obj\Debug\netcoreapp3.1\CompilerPascal.csproj.AssemblyReference.cache
 C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\CompilerPascal\obj\Debug\netcoreapp3.1\CompilerPascal.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\CompilerPascal\obj\Debug\netcoreapp3.1\CompilerPascal.AssemblyInfoInputs.cache
 C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\CompilerPascal\obj\Debug\netcoreapp3.1\CompilerPascal.AssemblyInfo.cs
@@ -54,3 +53,4 @@ C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\CompilerPascal\o
 C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\CompilerPascal\obj\Debug\netcoreapp3.1\CompilerPascal.dll
 C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\CompilerPascal\obj\Debug\netcoreapp3.1\CompilerPascal.pdb
 C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\CompilerPascal\obj\Debug\netcoreapp3.1\CompilerPascal.genruntimeconfig.cache
+C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\CompilerPascal\obj\Debug\netcoreapp3.1\CompilerPascal.csproj.AssemblyReference.cache

@@ -1,6 +1,0 @@
-program CheckDefs;
-type
-a = 5;
-begin
-;
-end.

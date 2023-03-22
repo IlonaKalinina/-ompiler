@@ -1,0 +1,5 @@
+const
+a = 7;
+b = 1.2e3;
+begin
+end.

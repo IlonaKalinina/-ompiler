@@ -33,7 +33,7 @@ namespace CompilerPascal
                 }
                 else if (((input_data[i] >= 'A') && (input_data[i] <= 'Z')) || ((input_data[i] >= 'a') && (input_data[i] <= 'z')))
                 {
-                    Error($"({line_number}, {symbol_number}) Illegal char constant");
+                    throw new Except(line_number, symbol_number, "Illegal char constant");
                 }
                 else if (input_data[i] == '/' && input_data[i + 1] == '/' || input_data[i] == '\'' || input_data[i] == ' ')
                 {
@@ -42,7 +42,7 @@ namespace CompilerPascal
                 }
                 else
                 {
-                    Error($"({line_number}, {symbol_number}) Syntax error");
+                    throw new Except(line_number, symbol_number, "Syntax error");
                 }
             }
         TryAscii:
@@ -64,7 +64,7 @@ namespace CompilerPascal
             }
             catch
             {
-                Error($"({line_number}, {symbol_number}) Illegal char constant");
+                throw new Except(line_number, symbol_number, "Illegal char constant");
             }
         }
     }

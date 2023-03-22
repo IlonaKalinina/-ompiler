@@ -1,0 +1,6 @@
+type
+a = string;
+var
+b : a;
+begin
+end.

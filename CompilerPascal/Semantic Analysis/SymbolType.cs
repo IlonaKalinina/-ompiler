@@ -26,6 +26,10 @@ namespace CompilerPascal
     {
         public SymString(string name) : base(name) { }
     }
+    public class SymProc : SymbolType
+    {
+        public SymProc(string name) : base(name) { }
+    }
     public class SymBoolean : SymbolType
     {
         public SymBoolean(string name) : base(name) { }
@@ -52,10 +56,10 @@ namespace CompilerPascal
         {
             string result = null;
 
-            result += "array\n\r";
+            result += "array\r\n";
             foreach (OrdinalTypeNode ordinalType in ordinalTypes)
             {
-                result += indent + $"├─── {ordinalType.ToString(indent + "│    ")}\n\r";
+                result += indent + $"├─── {ordinalType.ToString(indent + "│    ")}\r\n";
             }
             result += indent + $"└─── {type.ToString(indent + "     ")}";
             return result;
@@ -75,8 +79,8 @@ namespace CompilerPascal
         public override string ToString(string indent)
         {
             string result = null;
-            result += "..\n\r";
-            result += indent + $"├─── {from.ToString(indent + "│    ")}\n\r";
+            result += "..\r\n";
+            result += indent + $"├─── {from.ToString(indent + "│    ")}\r\n";
             result += indent + $"└─── {to.ToString(indent + "     ")}";
             return result;
         }
@@ -133,7 +137,7 @@ namespace CompilerPascal
             string result = null;
             string name = ToString();
 
-            result += $"{name}\n\r";
+            result += $"{name}\r\n";
             result += indent + $"└─── {original.ToString(indent + "     ")}";
 
             return result;

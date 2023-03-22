@@ -46,22 +46,10 @@ namespace CompilerPascal
     {
         public SymVarParamOut(SymbolVar var) : base("out " + var.ToString(), var.GetTypeVar()) { }
     }
-    public enum VarType
-    {
-        Param,
-        Const,
-        Global,
-        Local
-    }
     public class SymVarParam : SymbolVar
     {
         public int offset = 0;
         public SymVarParam(SymbolVar var) : base(var.ToString(), var.GetTypeVar()) { }
-    }
-
-    public class SymVarGlobal : SymbolVar
-    {
-        public SymVarGlobal(SymbolVar var) : base(var.ToString(), var.GetTypeVar()) { }
     }
 
     public class SymVarConst : SymbolVar
@@ -72,55 +60,5 @@ namespace CompilerPascal
             this.value = value;
         }
     }
-    public class SymVarLocal : SymbolVar
-    {
-        public int offset = 0;
-        public SymVarLocal(SymbolVar var) : base(var.ToString(), var.GetTypeVar()) { }
-    }
-    public class SymProc : Symbol
-    {
-        bool unlimitedParameters = false;
-        List<SymbolVar> args;
-        SymTable params_;
-        SymTable locals;
-        BlockStmt body;
 
-        public List<SymbolVar> GetParams()
-        {
-            return args;
-        }
-        public SymTable GetLocals()
-        {
-            return locals;
-        }
-
-        public int GetCountParams()
-        {
-            if (unlimitedParameters)
-            {
-                return -1;
-            }
-            else
-            {
-                return params_.GetSize();
-            }
-        }
-        public BlockStmt GetBody()
-        {
-            return body;
-        }
-        public SymProc(string name, SymTable params_, SymTable locals, BlockStmt body) : base(name)
-        {
-            this.params_ = params_;
-            this.locals = locals;
-            this.body = body;
-        }
-        public SymProc(string name) : base(name)
-        {
-            unlimitedParameters = true;
-            this.params_ = new SymTable(new Dictionary<string, Symbol>());
-            this.locals = new SymTable(new Dictionary<string, Symbol>());
-            this.body = new BlockStmt(new List<NodeStatement>());
-        }
-    }
 }

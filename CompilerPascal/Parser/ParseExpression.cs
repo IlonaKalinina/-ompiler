@@ -93,6 +93,9 @@ namespace CompilerPascal
                         case Separator.OpenBracket:
                             ans = ParsePositionArray(ans, ref symVar);
                             break;
+                        case Separator.Dot:
+                            ans = ParseRecordField(ans, ref symVar);
+                            break;
                     }
                 }
                 return ans;

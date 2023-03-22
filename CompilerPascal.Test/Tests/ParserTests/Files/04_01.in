@@ -1,0 +1,9 @@
+program CheckScalarTypes;
+var
+a : record
+x : string;
+y : integer;
+end;
+begin
+a.y := 10;
+end.

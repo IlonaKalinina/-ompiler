@@ -41,8 +41,7 @@ namespace CompilerPascal
                         if (startString)
                         {
                             startString = false;
-                            Error($"({line_number}, {symbol_number}) String exceeds line");
-                            return;
+                            throw new Except(line_number, symbol_number, "String exceeds line");
                         }
                         flag -= id_save;
                         Result();
@@ -87,8 +86,7 @@ namespace CompilerPascal
                                 if (startString)
                                 {
                                     startString = false;
-                                    Error($"({line_number}, {symbol_number}) String exceeds line");
-                                    return;
+                                    throw new Except(line_number, symbol_number, "String exceeds line");
                                 }
                                 Result();
                                 return;

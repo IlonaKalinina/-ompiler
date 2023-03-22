@@ -1,0 +1,13 @@
+program 
+├───type
+│    └─── =
+│         ├─── a
+│         └─── integer
+├───var
+│    └─── :
+│         ├─── b
+│         └─── a
+│              └─── integer
+│    
+begin
+└─── end

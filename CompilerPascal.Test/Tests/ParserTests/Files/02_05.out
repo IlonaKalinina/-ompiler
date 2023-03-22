@@ -1,0 +1,13 @@
+program CheckCompositeTypes
+├───var
+│    └─── :
+│         ├─── a
+│         └─── integer
+│    
+begin
+├─── :=
+│    ├─── a
+│    └─── *
+│         ├─── a
+│         └─── a
+└─── end

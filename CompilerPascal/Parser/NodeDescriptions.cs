@@ -108,33 +108,6 @@ namespace CompilerPascal
             return result;
         }
     }
-    public partial class ProcedureDefNode : NodeDescriptions
-    {
-        List<VarDeclarationNode> params_;
-        List<NodeDescriptions> localsTypes;
-        SymProc symProc;
-        public ProcedureDefNode(List<VarDeclarationNode> params_, List<NodeDescriptions> localsTypes, SymProc symProc)
-        {
-            this.params_ = params_;
-            this.localsTypes = localsTypes;
-            this.symProc = symProc;
-        }
-        public override string ToString(string indent)
-        {
-            string result;
-            result = $"procedure {symProc.ToString()}\r\n";
-            foreach (VarDeclarationNode el in params_)
-            {
-                result += indent + $"├─── {el.ToString(indent + Indent(false))}\r\n";
-            }
-            foreach (NodeDescriptions? el in localsTypes)
-            {
-                result += indent + $"├─── {el.ToString(indent + Indent(false))}\r\n";
-            }
-            result += indent + $"└─── {symProc.GetBody().ToString(indent + Indent(true))}";
-            return result;
-        }
-    }
 
     public class DeclarationNode : Node { }
     public class VarDeclarationNode : DeclarationNode

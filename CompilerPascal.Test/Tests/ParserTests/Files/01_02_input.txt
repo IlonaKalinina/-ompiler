@@ -1,6 +1,0 @@
-var
-a: real;
-b,c : string;
-d : integer = 7 + 2;
-begin
-end.

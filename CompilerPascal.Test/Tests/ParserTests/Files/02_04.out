@@ -1,0 +1,11 @@
+program CheckCompositeTypes
+├───var
+│    └─── :
+│         ├─── a
+│         └─── string
+│    
+begin
+├─── +=
+│    ├─── a
+│    └─── hello
+└─── end

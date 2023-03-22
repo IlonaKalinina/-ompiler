@@ -1,0 +1,5 @@
+var
+a: integer = 1 + 1;
+b,c : string;
+begin
+end.

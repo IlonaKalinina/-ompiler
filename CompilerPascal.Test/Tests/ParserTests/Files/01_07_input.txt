@@ -1,6 +1,0 @@
-program CheckDefs;
-var
-a, b : integer = 5;
-begin
-;
-end.

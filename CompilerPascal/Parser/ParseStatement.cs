@@ -37,7 +37,6 @@ namespace CompilerPascal
                 case Separator.Semiсolon:
                     break;
                 case KeyWord.EXIT:
-                    result = new CallStmt(symTableStack.Get("exit"), new List<NodeExpression>());
                     currentLex = lexer.GetLexem();
                     break;
                 default:
@@ -60,29 +59,22 @@ namespace CompilerPascal
             name = (string)currentLex.Value;
             Symbol sym = symTableStack.Get((string)currentLex.Value);
 
-            currentLex = lexer.GetLexem();
-
-            if (sym.GetType() != typeof(SymVarGlobal)   && 
-                sym.GetType() != typeof(SymVarLocal)    && 
+            /*
+            if (
                 sym.GetType() != typeof(SymVarParam)    && 
                 sym.GetType() != typeof(SymVarParamVar) && 
                 sym.GetType() != typeof(SymVarParamOut)
                )
             {
-                if (sym.GetType() == typeof(SymProc))
-                {
-                    //procedureStmt
-                    return ParseProcedureStmt(name, lineStart, symStart);
-                }
                 throw new Except(lineStart, symStart, $"Expected variable identifier {sym.GetType()}");
-            }
+            }*/
             symVar = (SymbolVar)sym;
             left = new NodeVar(symVar);
-
+            currentLex = lexer.GetLexem();
             while (Expect(Separator.OpenSquareBracket, Separator.Dot))
             {
                 Separator separator = (Separator)currentLex.Value;
-                currentLex = lexer.GetLexem();
+                
 
                 switch (separator)
                 {
@@ -91,11 +83,6 @@ namespace CompilerPascal
                         break;
                     case Separator.Dot:
                         left = ParseRecordField(left, ref symVar);
-                        name = symVar.ToString();
-                        if (((NodeRecordAccess)left).CalcType().GetType() == typeof(SymProc))
-                        {
-                            return ParseProcedureStmt(name, lineStart, symStart);
-                        }
                         break;
                 }
             }
@@ -247,58 +234,10 @@ namespace CompilerPascal
             return new RepeatStmt(body, cond);
         }
 
-        public NodeStatement ParseProcedureStmt(string name, int lineProc, int symProc)
-        {
-            List<NodeExpression?> parameter = new List<NodeExpression?>();
-            SymProc proc;
-
-            try
-            {
-                proc = (SymProc)symTableStack.Get(name);
-            }
-            catch
-            {
-                throw new Except(lineProc, symProc, $"Procedure not found \"{name}\"");
-            }
-            if (Expect(Separator.OpenBracket))
-            {
-                currentLex = lexer.GetLexem();
-                int i = 0;
-                while (!Expect(Separator.CloseBracket))
-                {
-                    NodeExpression param = ParseSimpleExpression();
-                    if (proc.ToString() != "read" && proc.ToString() != "write")
-                    {
-                        if (param.GetCachedType().GetType() != proc.GetParams()[i].GetOriginalTypeVar().GetType())
-                        {
-                            throw new Except(lineProc, symProc, $"Incompatible type for arg no. {i + 1}");
-                        }
-                        i += 1;
-                    }
-                    parameter.Add(param);
-                    if (Expect(Separator.Comma))
-                    {
-                        currentLex = lexer.GetLexem();
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                Require(Separator.CloseBracket);
-            }
-            if (proc.ToString() != "read" && proc.ToString() != "write")
-            {
-                if (proc.GetCountParams() != -1 && parameter.Count != proc.GetCountParams())
-                {
-                    throw new Except(lineProc, symProc, $"Wrong number of parameters specified for call to \"proc\"");
-                }
-            }
-            return new CallStmt(proc, parameter);
-        }
-
         public NodeExpression ParseRecordField(NodeExpression node, ref SymbolVar var_)
         {
+            currentLex = lexer.GetLexem();
+            
             if (!ExpectType(LexemaType.IDENTIFIER))
             {
                 throw new Except(currentLex.Line_number, currentLex.Symbol_number, "expected Identifier");
