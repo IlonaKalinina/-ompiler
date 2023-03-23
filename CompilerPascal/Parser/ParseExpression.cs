@@ -4,7 +4,7 @@ namespace CompilerPascal
 {
     public partial class Parser
     {
-        public NodeExpression ParseExpression(bool inDef = false)
+        public NodeExpression ParseExpression()
         {
             NodeExpression left = ParseSimpleExpression();
             while (Expect(Operator.Less, Operator.LessOrEqual, Operator.Greater, Operator.GreaterOrEqual, Operator.Equal, Operator.NotEqual))
@@ -17,7 +17,7 @@ namespace CompilerPascal
             return left;
         }
 
-        public NodeExpression ParseSimpleExpression(bool inDef = false)
+        public NodeExpression ParseSimpleExpression()
         {
             NodeExpression left = ParseTerm();
             while (Expect(Operator.Plus, Operator.Minus, KeyWord.OR, KeyWord.XOR))
@@ -29,7 +29,7 @@ namespace CompilerPascal
             }
             return left;
         }
-        public NodeExpression ParseTerm(bool inDef = false)
+        public NodeExpression ParseTerm()
         {
             NodeExpression left = ParseFactor();
             while (Expect(Operator.Multiply, Operator.Divide, KeyWord.AND))
@@ -41,7 +41,7 @@ namespace CompilerPascal
             }
             return left;
         }
-        public NodeExpression ParseFactor(bool inDef = false)
+        public NodeExpression ParseFactor()
         {
             if (Expect(Separator.OpenBracket))
             {

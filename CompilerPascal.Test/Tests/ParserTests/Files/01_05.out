@@ -1,23 +1,13 @@
-program CheckDefs
+program Test_01_05
 ├───type
-│    ├─── =
-│    │    ├─── a
-│    │    └─── integer
 │    └─── =
-│         ├─── b
-│         └─── a
-│              └─── integer
+│         ├─── a
+│         └─── integer
 ├───var
-│    ├─── :
-│    │    ├─── c
-│    │    ├─── b
-│    │         └─── a
-│    │              └─── integer
-│    │    └─── =
-│    │         └─── 5
 │    └─── :
 │         ├─── d
-│         ├─── integer
+│         ├─── a
+│         │    └─── integer
 │         └─── =
 │              └─── 7
 ├───type
@@ -27,9 +17,10 @@ program CheckDefs
 ├───var
 │    └─── :
 │         ├─── f
-│         └─── e
-│              └─── string
+│         ├─── e
+│         │    └─── string
+│         └─── =
+│              └─── hello
 │    
 begin
-├─── 
 └─── end

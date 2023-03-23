@@ -1,6 +1,6 @@
-program CheckWhile;
+program Test_03_04;
 var
-i : integer;
+i : integer = 0;
 begin
-while i > 5 do i -= 1;
+while i < 10 do i += 1;
 end.

@@ -1,4 +1,4 @@
-program CheckIf;
+program Test_03_01;
 begin
-if 6 > 5 then write('yes');
+if 10 > 1 then write('yes');
 end.

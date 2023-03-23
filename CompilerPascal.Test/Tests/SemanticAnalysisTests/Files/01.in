@@ -1,0 +1,7 @@
+program Test_01;
+var
+a : integer;
+b : integer;
+a, b : string
+begin
+end.

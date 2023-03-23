@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CompilerPascal
@@ -38,20 +39,6 @@ namespace CompilerPascal
             this.type = type;
         }
     }
-    public class SymVarParamVar : SymbolVar
-    {
-        public SymVarParamVar(SymbolVar var) : base("var " + var.ToString(), var.GetTypeVar()) { }
-    }
-    public class SymVarParamOut : SymbolVar
-    {
-        public SymVarParamOut(SymbolVar var) : base("out " + var.ToString(), var.GetTypeVar()) { }
-    }
-    public class SymVarParam : SymbolVar
-    {
-        public int offset = 0;
-        public SymVarParam(SymbolVar var) : base(var.ToString(), var.GetTypeVar()) { }
-    }
-
     public class SymVarConst : SymbolVar
     {
         public NodeExpression value;
@@ -60,5 +47,4 @@ namespace CompilerPascal
             this.value = value;
         }
     }
-
 }

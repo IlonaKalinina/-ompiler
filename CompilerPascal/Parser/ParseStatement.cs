@@ -47,35 +47,29 @@ namespace CompilerPascal
 
         public NodeStatement ParseSimpleStatement()
         {
-            SymbolVar symVar;
-
             NodeExpression left;
             NodeExpression right;
+            SymbolVar symVar;
 
-            string name;
-            int lineStart = currentLex.Line_number;
-            int symStart = currentLex.Symbol_number;
-
-            name = (string)currentLex.Value;
             Symbol sym = symTableStack.Get((string)currentLex.Value);
 
-            /*
-            if (
-                sym.GetType() != typeof(SymVarParam)    && 
-                sym.GetType() != typeof(SymVarParamVar) && 
-                sym.GetType() != typeof(SymVarParamOut)
-               )
+            string value = (string)currentLex.Value;
+            int line = currentLex.Line_number;
+            int symbol = currentLex.Symbol_number;
+
+            currentLex = lexer.GetLexem();
+            if (sym.GetType() == typeof(SymProc))
             {
-                throw new Except(lineStart, symStart, $"Expected variable identifier {sym.GetType()}");
-            }*/
+                return ParseProcedureStmt(value, line, symbol);
+            }
+
             symVar = (SymbolVar)sym;
             left = new NodeVar(symVar);
-            currentLex = lexer.GetLexem();
+
             while (Expect(Separator.OpenSquareBracket, Separator.Dot))
             {
                 Separator separator = (Separator)currentLex.Value;
-                
-
+                currentLex = lexer.GetLexem();
                 switch (separator)
                 {
                     case Separator.OpenSquareBracket:
@@ -86,17 +80,13 @@ namespace CompilerPascal
                         break;
                 }
             }
-
             if (!Expect(Operator.Assign, Operator.PlusEquality, Operator.MinusEquality, Operator.MultiplyEquality, Operator.DivideEquality))
             {
                 throw new Except(currentLex.Line_number, currentLex.Symbol_number, $"Expected assigment sign");
             }
-
             Operator operation = (Operator)currentLex.Value;
             currentLex = lexer.GetLexem();
-
             right = ParseExpression();
-
             return new AssignmentStmt(operation, left, right);
         }
         public NodeExpression ParsePositionArray(NodeExpression node, ref SymbolVar var_)
@@ -212,7 +202,6 @@ namespace CompilerPascal
             body = ParseStatement();
             return new WhileStmt(condition, body);
         }
-        //repeat ::= "repeat" {statement ";"} "until" expression
         public NodeStatement ParseRepeat()
         {
             List<NodeStatement> body = new List<NodeStatement>();
@@ -233,11 +222,8 @@ namespace CompilerPascal
             cond = ParseExpression();
             return new RepeatStmt(body, cond);
         }
-
         public NodeExpression ParseRecordField(NodeExpression node, ref SymbolVar var_)
         {
-            currentLex = lexer.GetLexem();
-            
             if (!ExpectType(LexemaType.IDENTIFIER))
             {
                 throw new Except(currentLex.Line_number, currentLex.Symbol_number, "expected Identifier");
@@ -248,6 +234,40 @@ namespace CompilerPascal
             NodeExpression field = new NodeVar(var_);
             currentLex = lexer.GetLexem();
             return new NodeRecordAccess(Operator.DotRecord, node, field);
+        }
+        public NodeStatement ParseProcedureStmt(string name, int lineProc, int symProc)
+        {
+            List<NodeExpression?> parameter = new List<NodeExpression?>();
+            SymProc proc;
+
+            try
+            {
+                proc = (SymProc)symTableStack.Get(name);
+            }
+            catch
+            {
+                throw new Except(lineProc, symProc, $"Procedure not found \"{name}\"");
+            }
+
+            if (Expect(Separator.OpenBracket))
+            {
+                currentLex = lexer.GetLexem();
+                while (!Expect(Separator.CloseBracket))
+                {
+                    NodeExpression param = ParseSimpleExpression();
+                    parameter.Add(param);
+                    if (Expect(Separator.Comma))
+                    {
+                        currentLex = lexer.GetLexem();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                Require(Separator.CloseBracket);
+            }
+            return new CallStmt(proc, parameter);
         }
     }
 }

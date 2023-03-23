@@ -1,4 +1,4 @@
-program CheckCompositeTypes
+program Test_02_02
 ├───var
 │    └─── :
 │         ├─── a
@@ -8,6 +8,6 @@ begin
 ├─── :=
 │    ├─── a
 │    └─── +
-│         ├─── 5
-│         └─── 5
+│         ├─── 1
+│         └─── 2
 └─── end

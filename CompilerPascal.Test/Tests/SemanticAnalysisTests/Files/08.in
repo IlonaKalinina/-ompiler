@@ -1,0 +1,6 @@
+program Test_08;
+var
+a : integer;
+begin
+a := 'hello';
+end.

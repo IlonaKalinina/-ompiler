@@ -42,7 +42,7 @@ namespace CompilerPascal.Test
                 return res;
             }
         }
-        public static IEnumerable<object[]> SimpleParserTestMethodInput
+        public static IEnumerable<object[]> SimpleParsTestMethodInput
         {
             get
             {
@@ -50,7 +50,7 @@ namespace CompilerPascal.Test
                 var directories = new DirectoryInfo(TestsDirectory).GetDirectories();
                 foreach (var directory in directories)
                 {
-                    if (directory.Name == "SimpleParserTests")
+                    if (directory.Name == "SimpleParsTests")
                     {
                         var key = "";
                         try
@@ -141,8 +141,8 @@ namespace CompilerPascal.Test
             Assert.AreEqual(outputs.Item2, outputs.Item1);
         }
         [TestMethod]
-        [DynamicData(nameof(SimpleParserTestMethodInput))]
-        public void SimpleParserTests(string fileName, string compileKeys)
+        [DynamicData(nameof(SimpleParsTestMethodInput))]
+        public void SimpleParsTests(string fileName, string compileKeys)
         {
             var outputs = GetOutput.RunAndGetOutputs(fileName, compileKeys);
             Assert.AreEqual(outputs.Item2, outputs.Item1);

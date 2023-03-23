@@ -8,10 +8,10 @@ namespace CompilerPascal
     class Program
     {
         public static bool eof = false;
-        public static string filePath = "../../../../CompilerPascal.Test/Tests/ParserTests/Files/04_01.in";
+        public static string filePath = "../../../../CompilerPascal.Test/Tests/ParserTests/Files/03_01.in";
         static void Main(string[] args)
         {
-            /*if (args.Length == 0)
+            if (args.Length == 0)
             {
                 Console.WriteLine("Options:");
                 Console.WriteLine("  -help    Display help");
@@ -27,12 +27,12 @@ namespace CompilerPascal
                 Console.WriteLine("  -p     Syntax analyzer)");
                 Console.WriteLine("  -sa    Semantic analysis");
                 return;
-            }*/
+            }
             try
             {
-                //Lexer lexer = new Lexer(args[0]);
-                Lexer lexer = new Lexer(filePath);
-                /*
+                Lexer lexer = new Lexer(args[0]);
+                //Lexer lexer = new Lexer(filePath);
+                
                 if (args[1] == "-lex")
                 {
                     while (!eof)
@@ -69,9 +69,8 @@ namespace CompilerPascal
                     SimpleNode firstNode = sParser.Expression();
                     SimpleParser.RunTree(firstNode);
                 }
-                */
-                //if (args[1] == "-pars")
-                if (true)
+                
+                if (args[1] == "-pars")
                 {
                     try
                     {
@@ -88,9 +87,24 @@ namespace CompilerPascal
                         throw new Except(lexer.GetLexem().Line_number, lexer.GetLexem().Symbol_number - 1, ex.Message);
                     }
                 }
-                /*if (args[1] == "-sa")
+                if (args[1] == "-sa")
                 {
-                }*/
+                    try
+                    {
+                        Parser parser = new Parser(lexer);
+                        Node firstNode = parser.ParseMainProgram();
+                        Console.WriteLine(firstNode.ToString(null));
+                        Console.Write(parser.OutSymbolTable());
+                    }
+                    catch (Except ex)
+                    {
+                        throw ex;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Except(lexer.GetLexem().Line_number, lexer.GetLexem().Symbol_number - 1, ex.Message);
+                    }
+                }
             }
             catch (Except e)
             {

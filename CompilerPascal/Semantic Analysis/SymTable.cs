@@ -11,10 +11,6 @@ namespace CompilerPascal
         {
             return data;
         }
-        public int GetSize()
-        {
-            return data.Count;
-        }
         public void Add(string name, Symbol value)
         {
             if (data.TryAdd(name, value))
@@ -44,14 +40,18 @@ namespace CompilerPascal
         {
             this.data = data;
         }
-        public SymTable(SymTable original)
-        {
-            this.data = new Dictionary<string, Symbol>(original.data);
-        }
     }
     public class SymTableStack
     {
         List<SymTable> tables;
+        public int GetCountTables()
+        {
+            return tables.Count;
+        }
+        public SymTable GetTable(int index)
+        {
+            return tables[index];
+        }
         public SymTable GetBackTable()
         {
             return tables[^1];

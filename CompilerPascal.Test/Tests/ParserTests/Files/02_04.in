@@ -1,6 +1,6 @@
-program CheckCompositeTypes;
+program Test_02_04;
 var
-a : string;
+str : string;
 begin
-a += 'hello';
+str += 'hello';
 end.

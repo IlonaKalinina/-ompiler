@@ -6,6 +6,6 @@ d : a = 7;
 type
 e = string;
 var
-f : e = "hello";
+f : e = 'hello';
 begin
 end.

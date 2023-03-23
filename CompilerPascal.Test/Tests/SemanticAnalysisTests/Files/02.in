@@ -1,0 +1,8 @@
+program Test_02;
+type
+a = integer;
+a = string;
+var
+b : a;
+begin
+end.

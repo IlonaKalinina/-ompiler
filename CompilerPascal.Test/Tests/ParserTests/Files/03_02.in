@@ -1,6 +1,6 @@
-program CheckIf;
+program Test_03_02;
 var
-i : integer;
+i : integer = 1;
 begin
-if (i < 6) or (i > -4) then write('yes');
+if (i > -5) or (i < 5) then write('yes');
 end.

@@ -1,14 +1,8 @@
-program CheckScalarTypes;
+program Test_04_02;
 type
-rec = record
-	n : record
-		b : record
-			c : integer;
-		end;
-	end;
-end;
+arr = array [0..5] of integer;
 var
-a : rec;
+a : arr;
 begin
-a.n.b.c := 5;
+a[0] := 5;
 end.

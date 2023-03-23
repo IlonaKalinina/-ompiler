@@ -1,6 +1,6 @@
-program CheckDefs;
+program Test_01_08;
 const
-a,b = 5;
+a,b = 10;
 begin
 ;
 end.

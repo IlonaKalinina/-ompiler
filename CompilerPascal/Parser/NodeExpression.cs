@@ -50,9 +50,9 @@ namespace CompilerPascal
         {
             SymbolType leftType = left.GetCachedType();
             SymbolType rightType = right.GetCachedType();
-            Operator op = (Operator)opname;
+            Operator BinOp = (Operator)opname;
 
-            if (leftType.GetType() != rightType.GetType() && op != Operator.DotRecord)
+            if (leftType.GetType() != rightType.GetType() && BinOp != Operator.DotRecord)
             {
                 if ((leftType.GetType() == typeof(SymInteger) || leftType.GetType() == typeof(SymReal)) &&
                    (rightType.GetType() == typeof(SymInteger) || rightType.GetType() == typeof(SymReal)))
@@ -74,13 +74,13 @@ namespace CompilerPascal
             }
             if (opname.GetType() == typeof(Operator))
             {
-                if (op == Operator.Equal || op == Operator.Less || op == Operator.LessOrEqual ||
-                    op == Operator.Greater || op == Operator.GreaterOrEqual || op == Operator.NotEqual)
+                if (BinOp == Operator.Equal || BinOp == Operator.Less || BinOp == Operator.LessOrEqual ||
+                    BinOp == Operator.Greater || BinOp == Operator.GreaterOrEqual || BinOp == Operator.NotEqual)
                 {
                     return new SymBoolean("boolean");
                 }
-                if ((op == Operator.Minus || op == Operator.Multiply || op == Operator.Divide ||
-                    op == Operator.MinusEquality || op == Operator.MultiplyEquality)
+                if ((BinOp == Operator.Minus || BinOp == Operator.Multiply || BinOp == Operator.Divide ||
+                    BinOp == Operator.MinusEquality || BinOp == Operator.MultiplyEquality)
                     && leftType.GetType() == typeof(SymString))
                 {
                     throw new Exception("Operator is not overloaded");

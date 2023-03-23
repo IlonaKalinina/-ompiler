@@ -2,7 +2,6 @@
 {
     public partial class Parser
     {
-        // program_name ::= 'porgam' id ';'
         public string ParseProgramName()
         {
             string name;

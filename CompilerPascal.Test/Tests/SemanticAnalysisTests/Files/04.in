@@ -1,0 +1,7 @@
+program Test_04;
+var
+a : integer;
+const
+a = 5;
+begin
+end.

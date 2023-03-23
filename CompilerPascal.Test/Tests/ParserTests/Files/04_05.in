@@ -1,8 +1,0 @@
-program CheckScalarTypes;
-type
-arr = array [0..5, 1..6, 2..7] of integer;
-var
-a : arr;
-begin
-a[3,4,5] := 4;
-end.

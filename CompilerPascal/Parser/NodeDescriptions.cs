@@ -6,40 +6,6 @@ using System.Text;
 namespace CompilerPascal
 {
     public class NodeDescriptions : Node {}
-    public class ConstTypesNode : NodeDescriptions
-    {
-        List<ConstDeclarationNode> body;
-        public ConstTypesNode(List<ConstDeclarationNode> body)
-        {
-            this.body = body;
-        }
-
-        public override string ToString(string indent)
-        {
-            string result;
-            result = $"const\r\n";
-            int i = 1;
-            foreach (ConstDeclarationNode el in body)
-            {
-                if (i == body.Count)
-                {
-                    if (el != null)
-                    {
-                        result += indent + $"└─── {el.ToString(indent + "     ")}";
-                    }
-                }
-                else
-                {
-                    if (el != null)
-                    {
-                        result += indent + $"├─── {el.ToString(indent + "│    ")}\r\n";
-                    }
-                    i++;
-                }
-            }
-            return result;
-        }
-    }
     public class VarTypesNode : NodeDescriptions
     {
         List<VarDeclarationNode> body;
@@ -108,6 +74,40 @@ namespace CompilerPascal
             return result;
         }
     }
+    public class ConstTypesNode : NodeDescriptions
+    {
+        List<ConstDeclarationNode> body;
+        public ConstTypesNode(List<ConstDeclarationNode> body)
+        {
+            this.body = body;
+        }
+
+        public override string ToString(string indent)
+        {
+            string result;
+            result = $"const\r\n";
+            int i = 1;
+            foreach (ConstDeclarationNode el in body)
+            {
+                if (i == body.Count)
+                {
+                    if (el != null)
+                    {
+                        result += indent + $"└─── {el.ToString(indent + "     ")}";
+                    }
+                }
+                else
+                {
+                    if (el != null)
+                    {
+                        result += indent + $"├─── {el.ToString(indent + "│    ")}\r\n";
+                    }
+                    i++;
+                }
+            }
+            return result;
+        }
+    }
 
     public class DeclarationNode : Node { }
     public class VarDeclarationNode : DeclarationNode
@@ -115,14 +115,6 @@ namespace CompilerPascal
         List<SymbolVar> vars;
         SymbolType type;
         NodeExpression? value = null;
-        public List<SymbolVar> GetVars()
-        {
-            return vars;
-        }
-        public NodeExpression? GetValue()
-        {
-            return value;
-        }
         public VarDeclarationNode(List<SymbolVar> name, SymbolType type, NodeExpression? value)
         {
             this.vars = name;
@@ -162,7 +154,7 @@ namespace CompilerPascal
             }
             if (value != null)
             {
-                res += indent + $"├─── {type.ToString(indent + "     ")}\r\n";
+                res += indent + $"├─── {type.ToString(indent + "│    ")}\r\n";
                 res += indent + $"└─── =\r\n" +
                        indent + $"     └─── {value.ToString(indent + "     " + "     ")}";
             }

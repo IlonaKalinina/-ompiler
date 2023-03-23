@@ -1,6 +1,6 @@
-program CheckCompositeTypes;
+program Test_02_02;
 var
 a : integer;
 begin
-a := 5 + 5;
+a := 1 + 2;
 end.

@@ -1,1 +1,13 @@
-(3,5) ERROR: expected type variable
+program Test_01_06
+├───var
+│    └─── :
+│         ├─── x
+│         └─── integer
+├───const
+│    └─── =
+│         ├─── y
+│         └─── 10
+│    
+begin
+├─── 
+└─── end

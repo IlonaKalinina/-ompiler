@@ -1,11 +1,11 @@
-program CheckCompositeTypes
+program Test_02_04
 ├───var
 │    └─── :
-│         ├─── a
+│         ├─── str
 │         └─── string
 │    
 begin
 ├─── +=
-│    ├─── a
+│    ├─── str
 │    └─── hello
 └─── end

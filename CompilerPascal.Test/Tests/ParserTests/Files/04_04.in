@@ -1,8 +1,8 @@
-program Test;
+program Test_04_04;
 type
-arr = array [0..5] of array [1..6] of array [2..7] of integer;
+arr = array [0..5, 1..6, 2..7] of integer;
 var
 a : arr;
 begin
-a[0][3][4] := 10;
+a[3,4,5] := 4;
 end.

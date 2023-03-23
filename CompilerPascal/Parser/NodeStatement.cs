@@ -42,7 +42,38 @@ namespace CompilerPascal
             return result;
         }
     }
-   
+    public class CallStmt : NodeStatement
+    {
+        SymProc proc;
+        List<NodeExpression> args;
+        public CallStmt(Symbol proc, List<NodeExpression> arg)
+        {
+            this.proc = (SymProc)proc;
+            this.args = arg;
+        }
+        public CallStmt(SymProc proc, List<NodeExpression> arg)
+        {
+            this.proc = proc;
+            this.args = arg;
+        }
+        public override string ToString(string indent)
+        {
+            string result = null;
+            result += $"{proc}\r\n";
+            foreach (NodeExpression arg in args)
+            {
+                if (arg != args.Last())
+                {
+                    result += indent + $"└─── {arg.ToString(indent + "│    ")}\r\n";
+                }
+                else
+                {
+                    result += indent + $"└─── {arg.ToString(indent + "     ")}";
+                }
+            }
+            return result;
+        }
+    }
     public class IfStmt : NodeStatement
     {
         NodeExpression condition;

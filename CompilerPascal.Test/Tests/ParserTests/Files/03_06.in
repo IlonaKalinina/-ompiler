@@ -1,6 +1,6 @@
-program CheckFor;
+program Test_03_06;
 var
 i : integer;
 begin
-for i := 5 downto 6 do write(i);
+for i := 10 downto 1 do write(i);
 end.

@@ -1,0 +1,6 @@
+program Test_10;
+var
+a : string;
+begin
+a := 'one'/'two';
+end.

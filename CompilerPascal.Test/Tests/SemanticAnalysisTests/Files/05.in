@@ -1,0 +1,10 @@
+program Test_05;
+type
+people = record
+age : integer;
+name : string;
+end;
+var
+people : people;
+begin
+end.

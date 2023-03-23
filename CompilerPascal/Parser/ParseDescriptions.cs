@@ -98,7 +98,7 @@ namespace CompilerPascal
             return new TypeTypesNode(body);
         }
 
-        public VarDeclarationNode ParseVariableDescription(KeyWord? param = null)
+        public VarDeclarationNode ParseVariableDescription()
         {
             List<string>    names = new List<string>();
             List<SymbolVar> vars  = new List<SymbolVar>();
@@ -120,12 +120,6 @@ namespace CompilerPascal
                 }
             }
             Require(Operator.Colon);
-
-            if (!(ExpectType(LexemaType.IDENTIFIER) || ExpectType(LexemaType.KEYWORD)))
-            {
-                throw new Except(currentLex.Line_number, currentLex.Symbol_number, "expected type variable");
-            }
-
             type = ParseType();
 
             if (Expect(Operator.Equal))
@@ -135,7 +129,7 @@ namespace CompilerPascal
                     throw new Except(currentLex.Line_number, currentLex.Symbol_number, "Only one variable can be initialized");
                 }
                 currentLex = lexer.GetLexem();
-                value = ParseExpression(inDef: true);
+                value = ParseExpression();
             }
 
             foreach (string name in names)

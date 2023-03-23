@@ -48,28 +48,4 @@ namespace CompilerPascal
             return result;
         }
     }
-
-    public class NodeProgram : Node
-    {
-        List<NodeDescriptions> types;
-        BlockStmt body;
-        public NodeProgram(List<NodeDescriptions> types, BlockStmt body)
-        {
-            this.types = types;
-            this.body = body;
-        }
-
-        public override string ToString(string indent)
-        {
-            string result = null;
-            indent = Indent(true);
-            result += $"program\r\n";
-            foreach (NodeDescriptions type in types)
-            {
-                result += $"├───{type.ToString(indent)}\r\n";
-            }
-            result += body.ToString(indent);
-            return result;
-        }
-    }
 }

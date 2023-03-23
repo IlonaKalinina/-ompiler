@@ -1,6 +1,6 @@
-program CheckRepeat;
+program Test_03_07;
 var
-i:integer = 5;
+i: integer = 5;
 begin
 repeat
 write(i);

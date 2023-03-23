@@ -1,4 +1,4 @@
-program CheckScalarTypes;
+program Test_04_01;
 var
 a : record
 x : string;

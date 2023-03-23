@@ -39,7 +39,15 @@ namespace CompilerPascal
         {
             if (!Expect(require))
             {
-                throw new Except(currentLex.Line_number, currentLex.Symbol_number, $"expected '{currentLex.Source}'");
+                if (require is Separator req)
+                {
+                    require = Lexer.ConvertEnumSeparator(req);
+                }
+                if (require.GetType() == typeof(Operator))
+                {
+                    require = Lexer.ConvertEnumOperator((Operator)require);
+                }
+                throw new Except(currentLex.Line_number, currentLex.Symbol_number, $"expected '{require}'");
             }
             currentLex = lexer.GetLexem();
         }
