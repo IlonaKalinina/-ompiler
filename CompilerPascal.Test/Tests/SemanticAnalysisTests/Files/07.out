@@ -1,0 +1,35 @@
+program Test_07
+├───type
+│    └─── =
+│         ├─── people
+│         └─── record 
+│              ├─── people
+│              │    └─── integer
+│              └─── name
+│                   └─── string
+├───var
+│    └─── :
+│         ├─── name
+│         └─── people
+│              └─── record 
+│                   ├─── people
+│                   │    └─── integer
+│                   └─── name
+│                        └─── string
+│    
+begin
+└─── end
+
+Symbol Tables:
+builtins:
+	integer: SymInteger
+	real: SymReal
+	string: SymString
+	write: SymProc
+	read: SymProc
+globals:
+	people: SymRecord
+		record "people": 
+		people: SymbolVar
+		name: SymbolVar
+	name: SymbolVar

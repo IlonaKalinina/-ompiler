@@ -8,7 +8,7 @@ namespace CompilerPascal
     class Program
     {
         public static bool eof = false;
-        public static string filePath = "../../../../CompilerPascal.Test/Tests/ParserTests/Files/03_01.in";
+        public static string filePath = "../../../../CompilerPascal.Test/Tests/SemanticAnalysisTests/Files/06.in";
         static void Main(string[] args)
         {
             if (args.Length == 0)
@@ -33,7 +33,7 @@ namespace CompilerPascal
                 Lexer lexer = new Lexer(args[0]);
                 //Lexer lexer = new Lexer(filePath);
                 
-                if (args[1] == "-lex")
+               if (args[1] == "-lex")
                 {
                     while (!eof)
                     {
@@ -69,7 +69,6 @@ namespace CompilerPascal
                     SimpleNode firstNode = sParser.Expression();
                     SimpleParser.RunTree(firstNode);
                 }
-                
                 if (args[1] == "-pars")
                 {
                     try
@@ -84,7 +83,7 @@ namespace CompilerPascal
                     }
                     catch (Exception ex)
                     {
-                        throw new Except(lexer.GetLexem().Line_number, lexer.GetLexem().Symbol_number - 1, ex.Message);
+                        throw new Except(Lexer.line_number, Lexer.symbol_number, ex.Message);
                     }
                 }
                 if (args[1] == "-sa")
@@ -102,7 +101,7 @@ namespace CompilerPascal
                     }
                     catch (Exception ex)
                     {
-                        throw new Except(lexer.GetLexem().Line_number, lexer.GetLexem().Symbol_number - 1, ex.Message);
+                        throw new Except(Lexer.line_number, Lexer.symbol_number, ex.Message);
                     }
                 }
             }

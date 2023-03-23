@@ -1,0 +1,21 @@
+program Test_08
+├───var
+│    └─── :
+│         ├─── a
+│         └─── integer
+│    
+begin
+├─── :=
+│    ├─── a
+│    └─── hello
+└─── end
+
+Symbol Tables:
+builtins:
+	integer: SymInteger
+	real: SymReal
+	string: SymString
+	write: SymProc
+	read: SymProc
+globals:
+	a: SymbolVar

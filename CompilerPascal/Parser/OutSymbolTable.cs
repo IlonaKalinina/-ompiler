@@ -9,10 +9,10 @@ namespace CompilerPascal
     {
         public string OutSymbolTable()
         {
-            string OutSymbolRecord(Dictionary<string, Symbol> dic, int index, int depth)
+            string OutSymbolRecord(Dictionary<string, Symbol> types, int index, int depth)
             {
                 string res = "";
-                SymRecord symRecord = (SymRecord)dic.ElementAt(index).Value;
+                SymRecord symRecord = (SymRecord)types.ElementAt(index).Value;
                 Dictionary<string, Symbol> dicLocals = symRecord.GetFields().GetData();
                 if (dicLocals.Count > 0)
                 {
@@ -20,17 +20,17 @@ namespace CompilerPascal
                     {
                         res += "\t";
                     }
-                    res += $"locals of record \"{dic.ElementAt(index).Key}\": \r\n";
-                    for (int z = 0; z < dicLocals.Count; z++)
+                    res += $"record \"{types.ElementAt(index).Key}\": \r\n";
+                    for (int k = 0; k < dicLocals.Count; k++)
                     {
                         for (int i = 0; i < depth; i++)
                         {
                             res += "\t";
                         }
-                        res += dicLocals.ElementAt(z).Key.ToString() + ": " + dicLocals.ElementAt(z).Value.GetType().Name + "\r\n";
-                        if (dicLocals.ElementAt(z).Value.GetType() == typeof(SymRecord))
+                        res += dicLocals.ElementAt(k).Key.ToString() + ": " + dicLocals.ElementAt(k).Value.GetType().Name + "\r\n";
+                        if (dicLocals.ElementAt(k).Value.GetType() == typeof(SymRecord))
                         {
-                            res += OutSymbolRecord(dicLocals, z, depth + 1);
+                            res += OutSymbolRecord(dicLocals, k, depth + 1);
                         }
                     }
                 }
@@ -51,13 +51,13 @@ namespace CompilerPascal
                         res += $"table #{i}\r\n";
                         break;
                 }
-                Dictionary<string, Symbol> dic = symTableStack.GetTable(i).GetData();
-                for (int j = 0; j < dic.Count; j++)
+                Dictionary<string, Symbol> types = symTableStack.GetTable(i).GetData();
+                for (int j = 0; j < types.Count; j++)
                 {
-                    res += "\t" + dic.ElementAt(j).Key.ToString() + ": " + dic.ElementAt(j).Value.GetType().Name + "\r\n";
-                    if (dic.ElementAt(j).Value.GetType() == typeof(SymRecord))
+                    res += "\t" + types.ElementAt(j).Key.ToString() + ": " + types.ElementAt(j).Value.GetType().Name + "\r\n";
+                    if (types.ElementAt(j).Value.GetType() == typeof(SymRecord))
                     {
-                        res += OutSymbolRecord(dic, j, 2);
+                        res += OutSymbolRecord(types, j, 2);
                     }
                 }
             }
