@@ -1,2 +1,1 @@
-﻿1 1 INT 2 2
-1 2 IDENTIFIER asd asd
+﻿(1,1) ERROR: Syntax error, 'identifier' expected but 'ordinal const' found

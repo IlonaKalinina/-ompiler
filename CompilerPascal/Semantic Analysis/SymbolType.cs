@@ -64,7 +64,6 @@ namespace CompilerPascal
             result += indent + $"└─── {type.ToString(indent + "     ")}";
             return result;
         }
-
     }
     public class OrdinalTypeNode : Node
     {
@@ -99,26 +98,26 @@ namespace CompilerPascal
 
         public override string ToString(string indent)
         {
-            string res;
-            res = $"record \r\n";
+            string result;
+            result = $"record \r\n";
             List<Symbol> symFields = new List<Symbol>(fields.GetData().Values);
             int i = 1;
-            foreach (Symbol symField in symFields)
+            foreach (Symbol field in symFields)
             {
-                SymbolVar varField = (SymbolVar)symField;
+                SymbolVar varField = (SymbolVar)field;
                 if (i == symFields.Count)
                 {
-                    res += indent + $"└─── {varField}\r\n";
-                    res += indent + $"     └─── {varField.GetOriginalTypeVar().ToString(indent + indent + "     ")}";
+                    result += indent + $"└─── {varField}\r\n";
+                    result += indent + $"     └─── {varField.GetOriginalTypeVar().ToString(indent + indent + "     ")}";
                 }
                 else
                 {
-                    res += indent + $"├─── {varField}\r\n";
-                    res += indent + $"│    └─── {varField.GetOriginalTypeVar().ToString(indent + indent + "│    ")}\r\n";
+                    result += indent + $"├─── {varField}\r\n";
+                    result += indent + $"│    └─── {varField.GetOriginalTypeVar().ToString(indent + indent + "│    ")}\r\n";
                     i++;
                 }
             }
-            return res;
+            return result;
         }
     }
     public class SymTypeAlias : SymbolType

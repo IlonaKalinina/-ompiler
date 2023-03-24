@@ -11,6 +11,7 @@ begin
 │    │    └─── 5
 │    ├─── write
 │    │    └─── yes
+│    else
 │    └─── write
 │         └─── no
 └─── end

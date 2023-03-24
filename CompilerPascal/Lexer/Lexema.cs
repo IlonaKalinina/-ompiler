@@ -38,6 +38,7 @@ namespace CompilerPascal
         EOF,
         ERROR,
         SEPARATOR,
+        COMM,
         NONE
     }
 

@@ -239,16 +239,8 @@ namespace CompilerPascal
         {
             List<NodeExpression?> parameter = new List<NodeExpression?>();
             SymProc proc;
-
-            try
-            {
                 proc = (SymProc)symTableStack.Get(name);
-            }
-            catch
-            {
-                throw new Except(lineProc, symProc, $"Procedure not found \"{name}\"");
-            }
-
+            
             if (Expect(Separator.OpenBracket))
             {
                 currentLex = lexer.GetLexem();

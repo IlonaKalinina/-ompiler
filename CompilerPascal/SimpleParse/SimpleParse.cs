@@ -91,7 +91,6 @@ namespace CompilerPascal
                     return nextExpression;
                 }
             }
-
             throw new Except(nowLexem.Line_number, nowLexem.Symbol_number, "expected factor");
         }
 

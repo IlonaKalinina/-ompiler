@@ -99,6 +99,7 @@ namespace CompilerPascal
             else
             {
                 result += indent + $"├─── {body.ToString(indent + "│    ")}\r\n";
+                result += indent + $"else\r\n";
                 result += indent + $"└─── {elseBody.ToString(indent + "     ")}";
             }
             return result;

@@ -6,14 +6,14 @@ namespace CompilerPascal
 {
     public class SymTable
     {
-        Dictionary<string, Symbol> data;
+        Dictionary<string, Symbol> table;
         public Dictionary<string, Symbol> GetData()
         {
-            return data;
+            return table;
         }
-        public void Add(string name, Symbol value)
+        public void Add(string name, Symbol type)
         {
-            if (data.TryAdd(name, value))
+            if (table.TryAdd(name, type))
             {
                 return;
             }
@@ -26,7 +26,7 @@ namespace CompilerPascal
         {
             Symbol value;
             Symbol? check;
-            if (data.TryGetValue(name, out check))
+            if (table.TryGetValue(name, out check))
             {
                 value = check;
                 return value;
@@ -36,9 +36,9 @@ namespace CompilerPascal
                 throw new Exception("Variable not declared");
             }
         }
-        public SymTable(Dictionary<string, Symbol> data)
+        public SymTable(Dictionary<string, Symbol> table)
         {
-            this.data = data;
+            this.table = table;
         }
     }
     public class SymTableStack
@@ -71,11 +71,11 @@ namespace CompilerPascal
                 throw new Exception($"Duplicate identifier \"{name}\"");
             }
         }
-        public void Add(string name, Symbol value)
+        public void Add(string name, Symbol type)
         {
             try
             {
-                GetBackTable().Add(name, value);
+                GetBackTable().Add(name, type);
             }
             catch
             {

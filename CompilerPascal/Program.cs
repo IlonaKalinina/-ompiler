@@ -8,7 +8,6 @@ namespace CompilerPascal
     class Program
     {
         public static bool eof = false;
-        public static string filePath = "../../../../CompilerPascal.Test/Tests/SemanticAnalysisTests/Files/06.in";
         static void Main(string[] args)
         {
             if (args.Length == 0)
@@ -22,53 +21,52 @@ namespace CompilerPascal
                 Console.WriteLine("Use the command:");
                 Console.WriteLine("  dotnet run ..\\CompilerPascal.Test\\Tests\\LexerTests\\Files\\{file name} -key");
                 Console.WriteLine("Key:");
-                Console.WriteLine("  -l     Lexical parser");
+                Console.WriteLine("  -lex     Lexical parser");
                 Console.WriteLine("  -sp    Simple expression parser");
-                Console.WriteLine("  -p     Syntax analyzer)");
+                Console.WriteLine("  -pars     Syntax analyzer)");
                 Console.WriteLine("  -sa    Semantic analysis");
                 return;
             }
             try
             {
                 Lexer lexer = new Lexer(args[0]);
-                //Lexer lexer = new Lexer(filePath);
-                
-               if (args[1] == "-lex")
-                {
-                    while (!eof)
-                    {
-                        var lexema = lexer.GetLexem();
 
-                        if (lexema != null)
-                        {
-                            if (lexema.Type != LexemaType.ERROR && lexema.Type != LexemaType.NONE)
-                            {
-                                if (lexema.Type == LexemaType.EOF)
-                                {
-                                    eof = true;
-                                }
-                                else
-                                {
-                                    Console.WriteLine($"{lexema.Line_number} {lexema.Symbol_number} {lexema.Type} {lexema.Value} {lexema.Source}");
-                                }
-                            }
-                            else if (lexema.Type == LexemaType.ERROR)
-                            {
-                                Console.WriteLine($"{lexema.Value}");
-                            }
-                        }
-                        else if (lexema != null && lexema.Type == LexemaType.EOF)
-                        {
-                            eof = true;
-                        }
-                    }
-                }
-                if (args[1] == "-sp")
-                {
-                    SimpleParser sParser = new SimpleParser(lexer);
-                    SimpleNode firstNode = sParser.Expression();
-                    SimpleParser.RunTree(firstNode);
-                }
+                if (args[1] == "-lex")
+                 {
+                     while (!eof)
+                     {
+                         var lexema = lexer.GetLexem();
+
+                         if (lexema != null)
+                         {
+                             if (lexema.Type != LexemaType.ERROR && lexema.Type != LexemaType.NONE)
+                             {
+                                 if (lexema.Type == LexemaType.EOF)
+                                 {
+                                     eof = true;
+                                 }
+                                 else
+                                 {
+                                     Console.WriteLine($"{lexema.Line_number} {lexema.Symbol_number} {lexema.Type} {lexema.Value} {lexema.Source}");
+                                 }
+                             }
+                             else if (lexema.Type == LexemaType.ERROR)
+                             {
+                                 Console.WriteLine($"{lexema.Value}");
+                             }
+                         }
+                         else if (lexema != null && lexema.Type == LexemaType.EOF)
+                         {
+                             eof = true;
+                         }
+                     }
+                 }
+                 if (args[1] == "-sp")
+                 {
+                     SimpleParser sParser = new SimpleParser(lexer);
+                     SimpleNode firstNode = sParser.Expression();
+                     SimpleParser.RunTree(firstNode);
+                 }
                 if (args[1] == "-pars")
                 {
                     try

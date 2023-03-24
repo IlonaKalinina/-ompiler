@@ -36,6 +36,10 @@ namespace CompilerPascal
                 }
                 else
                 {
+                    if (((input_data[i] >= 'A') && (input_data[i] <= 'Z')) || ((input_data[i] >= 'a') && (input_data[i] <= 'z')))
+                    {
+                        throw new Except(line_number, symbol_number, "Syntax error, 'identifier' expected but 'ordinal const' found");
+                    }
                     CheckRange();
                     return;
                 }

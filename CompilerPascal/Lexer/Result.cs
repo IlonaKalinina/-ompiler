@@ -177,7 +177,6 @@ namespace CompilerPascal
                     newValueLexema = GetEnumSeparator(value);
                     break;
                 case (LexemaType.KEYWORD):
-                    //newValueLexema = GetEnumKeyword(value);
                     Enum.TryParse(value.ToUpper(), out KeyWord res);
                     newValueLexema = res;
                     break;
@@ -185,7 +184,7 @@ namespace CompilerPascal
                     newValueLexema = value;
                     break;
             }
-            foundlexem = new Lexema(line_number, symbol_number, type, newValueLexema, temp);
+                foundlexem = new Lexema(line_number, symbol_number, type, newValueLexema, temp);
 
             if (temp != null) flag += temp.Length;
             temp = null;
