@@ -8,7 +8,7 @@ namespace CompilerPascal
         public List<NodeDescriptions> ParseDescription()
         {
             List<NodeDescriptions> types = new List<NodeDescriptions>();
-            while (Expect(KeyWord.VAR, KeyWord.CONST, KeyWord.TYPE))
+            while (Expect(KeyWord.VAR, KeyWord.CONST, KeyWord.TYPE, KeyWord.FUNCTION))
             {
                 switch (currentLex.Value)
                 {
@@ -20,6 +20,9 @@ namespace CompilerPascal
                         break;
                     case KeyWord.TYPE:
                         types.Add(ParseTypeDescription());
+                        break;
+                    case KeyWord.FUNCTION:
+                        types.Add(ParseFunctionDescription());
                         break;
                 }
             }
@@ -139,6 +142,46 @@ namespace CompilerPascal
                 vars.Add(var);
             }
             return new VarDeclarationNode(vars, type, value);
+        }
+
+        public FuncTypesNode ParseFunctionDescription()
+        {
+            string name;
+            List<VarDeclarationNode> param = new List<VarDeclarationNode>();
+            List<NodeDescriptions> locals;
+
+            currentLex = lexer.GetLexem();
+            RequireType(LexemaType.IDENTIFIER);
+            name = (string)currentLex.Value;
+            currentLex = lexer.GetLexem();
+
+            SymbolType type;
+
+            if (Expect(Separator.OpenBracket))
+            {
+                currentLex = lexer.GetLexem();
+                while (!Expect(Separator.CloseBracket))
+                {
+                    param.Add(ParseVariableDescription());
+                    if (Expect(Separator.Semiсolon))
+                    {
+                        currentLex = lexer.GetLexem();
+                    }
+                }
+                Require(Separator.CloseBracket);
+            }
+
+            Require(Operator.Colon);
+            type = ParseType();
+            Require(Separator.Semiсolon);
+
+            locals = ParseDescription();
+
+            Require(KeyWord.BEGIN);
+            BlockStmt body = ParseBlock();
+            Require(Separator.Semiсolon);
+
+            return new FuncTypesNode(name, param, locals, body, type);
         }
     }
 }

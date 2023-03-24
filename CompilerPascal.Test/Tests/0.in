@@ -1,0 +1,8 @@
+program Test;
+function Max(a: integer): array [1..10] of integer;
+const x= 6;
+function f: integer; begin end;
+begin
+end;
+begin
+end.

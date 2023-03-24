@@ -37,8 +37,8 @@ namespace CompilerPascal
                 binOpName = Lexer.ConvertEnumOperator(opname);
             }
             result += binOpName + "\r\n";
-            result += indent + $"├─── {left.ToString(indent + "│     ")}\r\n";
-            result += indent + $"└─── {right.ToString(indent + "     ")}";
+            result += indent + $"│    ├─── {left.ToString(indent + "│     ")}\r\n";
+            result += indent + $"│    └─── {right.ToString(indent + "     ")}";
             return result;
         }
     }
@@ -190,9 +190,9 @@ namespace CompilerPascal
             result += $"begin\r\n";
             foreach (NodeStatement stmt in body)
             {
-                result += $"├─── {stmt.ToString(indent)}\r\n";
+                result += indent + $"├─── {stmt.ToString(indent)}\r\n";
             }
-            result += $"└─── end";
+            result += indent + $"└─── end";
             return result;
         }
     }

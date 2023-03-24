@@ -1,0 +1,7 @@
+program Tests;
+function func () : string;
+begin
+func := 'hello';
+end;
+begin
+end.

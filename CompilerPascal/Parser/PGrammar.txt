@@ -24,6 +24,13 @@ type_declaration ::= "type" one_type_declaration {one_type_declaration}
 procedure_declaration ::= "procedure" identifier [procedure_parameters] ";" {var_declaration | const_declaration | type_declaration} block ";"
 	procedure_parameters ::= "(" ["var"|"out"] one_var_declaration {";" ["var"|"out"] one_var_declaration} ")"
 
+<function_declaration> ::= <function_header> {<const_declaration> | <var_declaration> | <type_declaration>} <compound_statement> ";" "return" <expression>";"
+	<function_header> ::= "function" <id> "(" <parameters> ")" ":" <type> ";"
+		<parameters> ::= ["var"] <parameter> {";" ["var"] <parameter>}
+		<parameter> ::= <id_list> ":" <type>
+		<id_list> ::= <id> {"," <id>}   
+
+		<compound_statement> ::=  "begin" <statement_sequence> "end"
 
 	//BLOCK
 block ::= "begin" [(statement) {";" (statement)}] "end"

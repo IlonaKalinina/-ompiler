@@ -10,7 +10,7 @@ namespace CompilerPascal
         public static bool eof = false;
         static void Main(string[] args)
         {
-            if (args.Length == 0)
+            /*if (args.Length == 0)
             {
                 Console.WriteLine("Options:");
                 Console.WriteLine("  -help    Display help");
@@ -26,12 +26,13 @@ namespace CompilerPascal
                 Console.WriteLine("  -pars     Syntax analyzer)");
                 Console.WriteLine("  -sa    Semantic analysis");
                 return;
-            }
+            }*/
             try
             {
-                Lexer lexer = new Lexer(args[0]);
+                string file = @"C:\Users\ilona\OneDrive\Рабочий стол\Pascal-compiler\CompilerPascal.Test\Tests\0.in";
+                Lexer lexer = new Lexer(file);
 
-                if (args[1] == "-lex")
+                /*if (args[1] == "-lex")
                  {
                      while (!eof)
                      {
@@ -66,41 +67,42 @@ namespace CompilerPascal
                      SimpleParser sParser = new SimpleParser(lexer);
                      SimpleNode firstNode = sParser.Expression();
                      SimpleParser.RunTree(firstNode);
+                 }*/
+                //if (args[1] == "-pars")
+                if (true)
+                {
+                    try
+                    {
+                        Parser parser = new Parser(lexer);
+                        Node firstNode = parser.ParseMainProgram();
+                        Console.WriteLine(firstNode.ToString(null));
+                    }
+                    catch (Except ex)
+                    {
+                        throw ex;
+                    }
+                    /* catch (Exception ex)
+                     {
+                         throw new Except(Lexer.line_number, Lexer.symbol_number, ex.Message);
+                     }
                  }
-                if (args[1] == "-pars")
-                {
-                    try
-                    {
-                        Parser parser = new Parser(lexer);
-                        Node firstNode = parser.ParseMainProgram();
-                        Console.WriteLine(firstNode.ToString(null));
-                    }
-                    catch (Except ex)
-                    {
-                        throw ex;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Except(Lexer.line_number, Lexer.symbol_number, ex.Message);
-                    }
-                }
-                if (args[1] == "-sa")
-                {
-                    try
-                    {
-                        Parser parser = new Parser(lexer);
-                        Node firstNode = parser.ParseMainProgram();
-                        Console.WriteLine(firstNode.ToString(null));
-                        Console.Write(parser.OutSymbolTable());
-                    }
-                    catch (Except ex)
-                    {
-                        throw ex;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Except(Lexer.line_number, Lexer.symbol_number, ex.Message);
-                    }
+                 if (args[1] == "-sa")
+                 {
+                     try
+                     {
+                         Parser parser = new Parser(lexer);
+                         Node firstNode = parser.ParseMainProgram();
+                         Console.WriteLine(firstNode.ToString(null));
+                         Console.Write(parser.OutSymbolTable());
+                     }
+                     catch (Except ex)
+                     {
+                         throw ex;
+                     }
+                     catch (Exception ex)
+                     {
+                         throw new Except(Lexer.line_number, Lexer.symbol_number, ex.Message);
+                     }*/
                 }
             }
             catch (Except e)

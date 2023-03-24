@@ -99,8 +99,8 @@ namespace CompilerPascal
                 binOpName = Lexer.ConvertEnumOperator((Operator)opname);
             }
             result += binOpName + "\r\n";
-            result += indent + $"├─── {left.ToString(indent + "│    ")}\r\n";
-            result += indent + $"└─── {right.ToString(indent + "     ")}";
+            result += $"│         ├─── {left.ToString(indent + "│    ")}\r\n";
+            result += $"│         └─── {right.ToString(indent + "     ")}";
             return result;
         }
     }
@@ -172,11 +172,11 @@ namespace CompilerPascal
                 {
                     if (arg == args.Last())
                     {
-                        result += indent + $"└─── {arg.ToString(indent + "│    ")}";
+                        result += indent + $"│    └─── {arg.ToString(indent + "│    ")}";
                     }
                     else
                     {
-                        result += indent + $"├─── {arg.ToString(indent + "     ")}\r\n";
+                        result += indent + $"│    ├─── {arg.ToString(indent + "     ")}\r\n";
                     }
                 }
             }

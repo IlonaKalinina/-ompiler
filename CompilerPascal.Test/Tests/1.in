@@ -1,0 +1,7 @@
+program Test;
+function Max (a, b: integer): integer;
+var x, y: real;
+begin
+end;
+begin
+end.

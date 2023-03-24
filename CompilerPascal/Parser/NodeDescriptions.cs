@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CompilerPascal
 {
-    public class NodeDescriptions : Node {}
+    public class NodeDescriptions : Node { }
     public class VarTypesNode : NodeDescriptions
     {
         List<VarDeclarationNode> body;
@@ -53,6 +53,7 @@ namespace CompilerPascal
             string result;
             result = $"type\r\n";
             int i = 1;
+
             foreach (DeclarationNode el in body)
             {
                 if (i == body.Count)
@@ -108,7 +109,39 @@ namespace CompilerPascal
             return result;
         }
     }
+    public class FuncTypesNode : NodeDescriptions
+    {
+        string name;
+        List<VarDeclarationNode> param;
+        List<NodeDescriptions> locals;
+        BlockStmt body;
+        SymbolType type;
 
+        public FuncTypesNode(string name, List<VarDeclarationNode> param, List<NodeDescriptions> locals, BlockStmt body, SymbolType type)
+        {
+            this.name = name;
+            this.param = param;
+            this.locals = locals;
+            this.body = body;
+            this.type = type;
+        }
+        public override string ToString(string indent)
+        {
+            string res;
+            res = $"function {name}\r\n";
+            res += indent + $"├─── {type.ToString(indent + "     ")}\r\n";
+            foreach (VarDeclarationNode el in param)
+            {
+                res += indent + $"├─── {el.ToString(indent + "│    ")}\r\n";
+            }
+            foreach (NodeDescriptions el in locals)
+            {
+                res += indent + $"├─── {el.ToString(indent + "│    ")} \r\n";
+            }
+            res += indent + $"└─── {body.ToString(indent + "     ")}";
+            return res;
+        }
+    }
     public class DeclarationNode : Node { }
     public class VarDeclarationNode : DeclarationNode
     {
